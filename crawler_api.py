@@ -86,7 +86,7 @@ def get_flats(n, save_json=True, filename="scraped_api.json"):
                 "locationId": "0-EU-ES-46",
                 # "locationLevel": 6,
                 "propertyType": "homes",
-                "penthouse": penthouse,
+                # "penthouse": penthouse,
                 "locale": "es",
                 "maxItems": max_items_per_request,
                 "maxPrice": max_price,
@@ -103,17 +103,19 @@ def get_flats(n, save_json=True, filename="scraped_api.json"):
             data += elements
 
         if save_json:
-            with open(filename, "w") as f:
-                result = [dict(item, **{'date':today}) for item in data]
-                json.dump(result, f)
+            if len(data) > 0:
+                with open(filename, "w") as f:
+                    result = [dict(item, **{'date':today}) for item in data]
+                    json.dump(result, f)
 
         return result
 
     except:
         if save_json:
-            with open(filename, "w") as f:
-                result = [dict(item, **{'date':today}) for item in data]
-                json.dump(result, f)  
+            if len(data) > 0:
+                with open(filename, "w") as f:
+                    result = [dict(item, **{'date':today}) for item in data]
+                    json.dump(result, f)  
 
         return result   
 
