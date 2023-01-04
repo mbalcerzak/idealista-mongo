@@ -29,7 +29,7 @@ def get_flats_multiprice() -> list:
         if document["count"] == max_records and document["_id"] not in max_prices_flats:
             max_prices_flats.append(document["_id"])
 
-    with open("flat_count.json", "w") as f:
+    with open("data/flat_count.json", "w") as f:
         json.dump(issue_list, f)
 
     print(f"Max number of prices per flat: {max_records}")
@@ -50,13 +50,16 @@ def get_max_price_records_data(max_prices_flats:list):
         for d in mydoc:
             print(d)
 
+    with open("data/most_price_changes.json", "w") as f:
+        json.dump(json.loads(dumps(mydoc)), f)
+
 
 def save_prices():
     mydb = get_db()
     collection_prices = mydb["_prices_"]
     cursor = collection_prices.find({})
 
-    with open('prices.json', 'w') as file:
+    with open('data/prices.json', 'w') as file:
         json.dump(json.loads(dumps(cursor)), file)
 
 
