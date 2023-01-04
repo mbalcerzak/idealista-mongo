@@ -53,10 +53,7 @@ def today_str() -> str:
     return datetime.today().strftime('%Y-%m-%d')
 
 
-def get_flats(n, save_json=True, filename="scraped_api.json"):
-
-    # config = configparser.ConfigParser()
-    # config.read('params.ini')
+def get_flats(save_json=True, filename="scraped_api.json"):
 
     n_pages_x_request = 2000  # number of pages to query
     max_items_per_request = 50 # max current support is 50
@@ -65,28 +62,37 @@ def get_flats(n, save_json=True, filename="scraped_api.json"):
     minSize = 40
     order = "publicationDate"
     penthouse = "true"
-    # num peticiones    = n_pages x n_cities
 
-    with open("idealista_cred.json", "r") as f:
+    with open(".db_creds/idealista_cred.json", "r") as f:
         creds_all = json.load(f)
 
-    creds = creds_all[n]
-
-    idealista = Idealista(**creds)
+    creds = creds_all[2]
 
     today = today_str()
+    result = None
+
+    response = None
+    dummy_params = {"locationId": "0-EU-ES-46", "operation": "sale", "propertyType": "homes", "numPage": 1}
+    
+    for creds in creds_all:
+        while not response:
+            idealista = Idealista(**creds)
+            response = idealista.make_request("POST", dummy_params, country="es")
+
+        fresh_creds = creds
+        break
 
     try:
+        idealista = Idealista(**fresh_creds)
         data = []
+
         for n_page in range(1, n_pages_x_request):
 
-            print(f"\tPage:{n_page}")
             params = {
                 "operation": "sale",
                 "locationId": "0-EU-ES-46",
-                # "locationLevel": 6,
                 "propertyType": "homes",
-                # "penthouse": penthouse,
+                "penthouse": penthouse,
                 "locale": "es",
                 "maxItems": max_items_per_request,
                 "maxPrice": max_price,
@@ -96,6 +102,8 @@ def get_flats(n, save_json=True, filename="scraped_api.json"):
                 "order": order,
                 "sort": "desc"
             }
+
+            print(f"\tPage:{n_page}")
 
             req_result = idealista.make_request("POST", params, country="es")
             print(f"Number of flats: {len(data)}")
