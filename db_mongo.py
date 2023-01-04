@@ -4,7 +4,7 @@ import json
 from crawler_api import get_flats
 
 
-with open("creds_mongo_mab.json", "r") as f:
+with open(".db_creds/creds_mongo_mab.json", "r") as f:
     creds_mongo = json.load(f)
 
 username = creds_mongo["username"]
@@ -42,8 +42,17 @@ chosen_keys = ["propertyCode", "date", "price"]
 
 flat_prices = [{k:v for k,v in flat.items() if k in chosen_keys} for flat in flats]
 
-# print(flat_prices[0])
+for price in flat_prices:
+    myquery = {
+        "propertyCode": price["propertyCode"], 
+        "date": price["date"], 
+        "price": price["price"]
+        }
+    mydoc = collection_prices.find(myquery)
 
-collection_prices.insert_many(flat_prices)
+    if len(list(mydoc)) > 0:
+        collection_prices.insert_one(price)
+    else:
+        print(f"Price remains the same: {price}")
 
 print(f"Inserted: {new_flats}, {old_flats} found already existing")
