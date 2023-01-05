@@ -16,6 +16,8 @@ propertyCodes = data.keys()
 
 st.title("Idealista scraper")
 
+chosen_code = "98891678"
+
 chosen_code = st.selectbox(
      'Pick the Property Code',
      propertyCodes)
