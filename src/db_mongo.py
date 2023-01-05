@@ -2,7 +2,7 @@ import pymongo
 from pymongo import MongoClient, errors
 import json
 
-from src.crawler_api import get_flats
+from crawler_api import get_flats
 
 
 def get_db(permission:str="read"):
