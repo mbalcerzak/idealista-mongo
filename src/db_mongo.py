@@ -31,7 +31,7 @@ def main():
 
     new_flats, old_flats = 0,0
 
-    for flat in flats_with_ids:
+    for flat in flats_with_ids:    
         try:
             collection_flats.insert_one(flat)
             print(f"New flat {flat['propertyCode']}")

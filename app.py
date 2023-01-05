@@ -16,11 +16,10 @@ propertyCodes = data.keys()
 
 st.title("Idealista scraper")
 
-chosen_code = "98891678"
-
 chosen_code = st.selectbox(
      'Pick the Property Code',
-     propertyCodes)
+     propertyCodes,
+     index=5)
 
 st.image(flats_data[chosen_code]['thumbnail'])
 st.markdown(f"[Go to the Idealista ad]({flats_data[chosen_code]['url']})")
