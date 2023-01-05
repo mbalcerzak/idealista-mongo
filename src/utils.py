@@ -8,6 +8,10 @@ def strip_dict(d:dict) -> dict:
     return {k:v for k,v in d.items() if k in ["propertyCode","price","date"]}
 
 
+def strip_dict_short(d:dict) -> dict:
+    return {k:v for k,v in d.items() if k in ["price","date"]}
+
+
 def get_flats_multiprice_max() -> list:
     """Returns data for flats with the highest number of price changes"""
     mydb = get_db()
@@ -46,7 +50,7 @@ def get_price_records_data(max_prices_flats:list):
     """Takes a list of flat IDs and returns data for them"""
     mydb = get_db()
     collection_prices = mydb["_prices_"]
-    results = []
+    results = {}
 
     for procertyCode in max_prices_flats:
         myquery = {"propertyCode": procertyCode}
@@ -54,9 +58,9 @@ def get_price_records_data(max_prices_flats:list):
         mydoc = collection_prices.find(myquery)
         doc_data = []
         for d in mydoc:
-            doc_data.append(strip_dict(d))
+            doc_data.append(strip_dict_short(d))
 
-        results.append(doc_data)
+        results[procertyCode] = doc_data
 
     with open("data/most_price_changes.json", "w") as f:
         json.dump(json.loads(dumps(results)), f)
@@ -87,7 +91,5 @@ def save_prices():
 
 
 if __name__ == "__main__":
-    # max_prices_flats = get_flats_multiprice()
-    # get_price_records_data(max_prices_flats)
     price_changes = get_flats_id()
     get_price_records_data(price_changes)
