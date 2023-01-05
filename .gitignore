@@ -1,5 +1,5 @@
 *.json
-!most_price_changes.json
+!output/*
 
 __pycache__/
 .venv/

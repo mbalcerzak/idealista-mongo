@@ -62,7 +62,7 @@ def get_price_records_data(max_prices_flats:list):
 
         results[procertyCode] = doc_data
 
-    with open("data/most_price_changes.json", "w") as f:
+    with open("output/most_price_changes.json", "w") as f:
         json.dump(json.loads(dumps(results)), f)
 
 
