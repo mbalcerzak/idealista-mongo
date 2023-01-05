@@ -10,14 +10,13 @@ with urllib.request.urlopen(max_prices_url) as url:
     data = json.load(url)
 
 
-propertyCodes = [x["propertyCode"] for x in data]
+propertyCodes = data.keys()
 
-option = st.selectbox(
+chosen_code = st.selectbox(
      'How would you like to be contacted?',
      propertyCodes)
 
-if option:
-
-    chart_data = None
-
+if chosen_code:
+    chart_data = data[chosen_code]
+    print(chart_data)
     st.line_chart(chart_data)
