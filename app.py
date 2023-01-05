@@ -14,13 +14,26 @@ with open("output/flat_data.json", "r") as f:
 
 propertyCodes = data.keys()
 
+st.title("Idealista scraper")
+
 chosen_code = st.selectbox(
      'Pick the Property Code',
      propertyCodes)
 
-st.header("House information")
-flats_data[chosen_code]
+st.image(flats_data[chosen_code]['thumbnail'])
+st.markdown(f"[Go to the Idealista ad]({flats_data[chosen_code]['url']})")
 
+st.header("House information")
+
+
+item_list = ['floor', 'price', 'propertyType', 'size', 'exterior', 'rooms', 'bathrooms', 'district', 'neighborhood', 'hasLift', 'parkingSpace', 'priceByArea']
+items_present = [x for x in item_list if x in flats_data[chosen_code].keys()]
+
+for elem in items_present:
+    st.write(f"{elem}: {flats_data[chosen_code][elem]}")
+
+st.subheader("Description")
+st.write(flats_data[chosen_code]['description'])
 
 st.header("Price history")
 if chosen_code:
