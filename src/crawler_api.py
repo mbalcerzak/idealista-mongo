@@ -53,9 +53,9 @@ def today_str() -> str:
     return datetime.today().strftime('%Y-%m-%d')
 
 
-def get_flats(save_json=True, filename="data/scraped_api.json"):
+def get_flats(save_json=True, filename="data/scraped_api.json", n_pages=2000):
 
-    n_pages_x_request = 2000  # number of pages to query
+    n_pages_x_request = n_pages  # number of pages to query
     max_items_per_request = 50 # max current support is 50
     min_price = 1
     max_price = 9999999
@@ -66,7 +66,7 @@ def get_flats(save_json=True, filename="data/scraped_api.json"):
     with open(".db_creds/idealista_cred.json", "r") as f:
         creds_all = json.load(f)
 
-    creds = creds_all[2]
+    # fresh_creds = creds_all[3]
 
     today = today_str()
     result = None
@@ -74,10 +74,19 @@ def get_flats(save_json=True, filename="data/scraped_api.json"):
     response = None
     dummy_params = {"locationId": "0-EU-ES-46", "operation": "sale", "propertyType": "homes", "numPage": 1}
     
-    for creds in creds_all:
-        while not response:
+    for i, creds in enumerate(creds_all):
+        print(f"({i+1}) {creds=}")
+        try:
             idealista = Idealista(**creds)
             response = idealista.make_request("POST", dummy_params, country="es")
+
+            if response:
+                fresh_creds = creds
+                break
+
+        except json.decoder.JSONDecodeError:
+            print(f"Creds {i+1} not working")
+            continue
 
         fresh_creds = creds
         break
@@ -129,4 +138,4 @@ def get_flats(save_json=True, filename="data/scraped_api.json"):
 
 
 if __name__ == "__main__":
-    flats = get_flats()
+    flats = get_flats(n_pages=5)

@@ -5,3 +5,7 @@ __pycache__/
 .venv/
 
 secrets.toml
+
+.DS_Store
+
+log_inside

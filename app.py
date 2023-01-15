@@ -27,8 +27,8 @@ st.markdown(f"[Go to the Idealista ad]({flats_data[chosen_code]['url']})")
 st.header("House information")
 
 
-item_list = ['floor', 'price', 'propertyType', 'size', 'exterior', 'rooms', 'bathrooms', 'district', 'neighborhood', 'hasLift', 'parkingSpace', 'priceByArea']
-items_present = [x for x in item_list if x in flats_data[chosen_code].keys()]
+item_list = ('floor', 'price', 'propertyType', 'size', 'exterior', 'rooms', 'bathrooms', 'district', 'neighborhood', 'hasLift', 'parkingSpace', 'priceByArea')
+items_present = set(flats_data[chosen_code].keys()).intersection(item_list)
 
 for elem in items_present:
     st.write(f"{elem}: {flats_data[chosen_code][elem]}")
@@ -43,3 +43,7 @@ if chosen_code:
     st.line_chart(chart_df)
 
 
+col1, col2, col3 = st.columns(3)
+col1.metric("Temperature", "70 °F", "1.2 °F")
+col2.metric("Wind", "9 mph", "-8%")
+col3.metric("Humidity", "86%", "4%")
