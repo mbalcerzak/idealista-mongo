@@ -9,3 +9,4 @@ secrets.toml
 .DS_Store
 
 log_inside
+log

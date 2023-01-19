@@ -53,7 +53,6 @@ def main():
 
     for flat_price in flat_prices:
         flat_price["price"] = int(flat_price["price"])
-        print(f"{flat_price=}")
 
         myquery = {
             "propertyCode": flat_price["propertyCode"], 

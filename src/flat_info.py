@@ -48,9 +48,9 @@ def update_flat_data():
 
 
 if __name__ == "__main__":  
-    # max_prices_flats = get_flats_multiprice_max() 
-    # get_price_records_data(max_prices_flats)
-    get_price_records_data(get_flats_id(2))
-    # update_flat_data()
-    # get_avg_prices_district()
+    max_prices_flats = get_flats_multiprice_max() 
+    get_price_records_data(max_prices_flats)
+    # get_price_records_data(get_flats_id(2))
+    update_flat_data()
+    get_avg_prices_district()
         

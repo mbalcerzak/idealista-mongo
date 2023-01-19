@@ -53,7 +53,7 @@ def today_str() -> str:
     return datetime.today().strftime('%Y-%m-%d')
 
 
-def get_flats(save_json=True, filename="data/scraped_api.json", n_pages=2000):
+def get_flats(save_json=True, filename="data/scraped_api.json", n_pages=4000):
 
     n_pages_x_request = n_pages  # number of pages to query
     max_items_per_request = 50 # max current support is 50
@@ -70,9 +70,15 @@ def get_flats(save_json=True, filename="data/scraped_api.json", n_pages=2000):
 
     today = today_str()
     result = None
+    fresh_creds = None
 
     response = None
-    dummy_params = {"locationId": "0-EU-ES-46", "operation": "sale", "propertyType": "homes", "numPage": 1}
+    dummy_params = {
+        "locationId": "0-EU-ES-46", 
+        "operation": "sale", 
+        "propertyType": "homes", 
+        "numPage": 1
+        }
     
     for i, creds in enumerate(creds_all):
         print(f"({i+1}) {creds=}")
@@ -88,53 +94,51 @@ def get_flats(save_json=True, filename="data/scraped_api.json", n_pages=2000):
             print(f"Creds {i+1} not working")
             continue
 
-        fresh_creds = creds
-        break
+    if fresh_creds:
+        try:
+            idealista = Idealista(**fresh_creds)
+            data = []
 
-    try:
-        idealista = Idealista(**fresh_creds)
-        data = []
+            for n_page in range(1, n_pages_x_request):
 
-        for n_page in range(1, n_pages_x_request):
+                params = {
+                    "operation": "sale",
+                    "locationId": "0-EU-ES-46",
+                    "propertyType": "homes",
+                    "penthouse": penthouse,
+                    "locale": "es",
+                    "maxItems": max_items_per_request,
+                    "maxPrice": max_price,
+                    "minPrice": min_price,
+                    "minSize": minSize,
+                    "numPage": n_page,
+                    "order": order,
+                    "sort": "desc"
+                }
 
-            params = {
-                "operation": "sale",
-                "locationId": "0-EU-ES-46",
-                "propertyType": "homes",
-                "penthouse": penthouse,
-                "locale": "es",
-                "maxItems": max_items_per_request,
-                "maxPrice": max_price,
-                "minPrice": min_price,
-                "minSize": minSize,
-                "numPage": n_page,
-                "order": order,
-                "sort": "desc"
-            }
+                print(f"\tPage:{n_page}")
 
-            print(f"\tPage:{n_page}")
+                req_result = idealista.make_request("POST", params, country="es")
+                print(f"Number of flats: {len(data)}")
+                elements = req_result["elementList"]
+                data += elements
 
-            req_result = idealista.make_request("POST", params, country="es")
-            print(f"Number of flats: {len(data)}")
-            elements = req_result["elementList"]
-            data += elements
+            if save_json:
+                if len(data) > 0:
+                    with open(filename, "w") as f:
+                        result = [dict(item, **{'date':today}) for item in data]
+                        json.dump(result, f)
 
-        if save_json:
-            if len(data) > 0:
-                with open(filename, "w") as f:
-                    result = [dict(item, **{'date':today}) for item in data]
-                    json.dump(result, f)
+            return result
 
-        return result
+        except:
+            if save_json:
+                if len(data) > 0:
+                    with open(filename, "w") as f:
+                        result = [dict(item, **{'date':today}) for item in data]
+                        json.dump(result, f)  
 
-    except:
-        if save_json:
-            if len(data) > 0:
-                with open(filename, "w") as f:
-                    result = [dict(item, **{'date':today}) for item in data]
-                    json.dump(result, f)  
-
-        return result   
+            return result   
 
 
 if __name__ == "__main__":

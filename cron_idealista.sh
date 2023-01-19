@@ -1,5 +1,7 @@
-source /Users/malgorzatabslcerzak/Documents/projects/idealista-mongo/.venv/bin/activate
+cd /Users/malgorzatabslcerzak/Documents/projects/idealista-mongo/
 
-/Users/malgorzatabslcerzak/Documents/projects/idealista-mongo/.venv/bin/python3.9 /Users/malgorzatabslcerzak/Documents/projects/idealista-mongo/src/db_mongo.py &> /Users/malgorzatabslcerzak/Documents/projects/idealista-mongo/log_inside
+source .venv/bin/activate
 
-/Users/malgorzatabslcerzak/Documents/projects/idealista-mongo/.venv/bin/python3.9 /Users/malgorzatabslcerzak/Documents/projects/idealista-mongo/src/flat_info.py
+.venv/bin/python3.9 src/db_mongo.py &> log_inside
+
+.venv/bin/python3.9 src/flat_info.py
