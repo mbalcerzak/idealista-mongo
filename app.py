@@ -12,14 +12,14 @@ with urllib.request.urlopen(max_prices_url) as url:
 with open("output/flat_data.json", "r") as f:
     flats_data = json.load(f)   
 
-propertyCodes = data.keys()
+propertyCodes = list(data.keys())
 
 st.title("Idealista scraper")
 
 chosen_code = st.selectbox(
      'Pick the Property Code',
      propertyCodes,
-     index=5)
+     index=len(propertyCodes)-1)
 
 st.image(flats_data[chosen_code]['thumbnail'])
 st.markdown(f"[Go to the Idealista ad]({flats_data[chosen_code]['url']})")
@@ -43,7 +43,7 @@ if chosen_code:
     st.line_chart(chart_df)
 
 
-col1, col2, col3 = st.columns(3)
-col1.metric("Temperature", "70 °F", "1.2 °F")
-col2.metric("Wind", "9 mph", "-8%")
-col3.metric("Humidity", "86%", "4%")
+# col1, col2, col3 = st.columns(3)
+# col1.metric("Temperature", "70 °F", "1.2 °F")
+# col2.metric("Wind", "9 mph", "-8%")
+# col3.metric("Humidity", "86%", "4%")

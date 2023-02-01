@@ -53,7 +53,7 @@ def today_str() -> str:
     return datetime.today().strftime('%Y-%m-%d')
 
 
-def get_flats(save_json=True, filename="data/scraped_api.json", n_pages=4000):
+def get_flats(save_json=True, filename="data/scraped_api.json", n_pages=2000):
 
     n_pages_x_request = n_pages  # number of pages to query
     max_items_per_request = 50 # max current support is 50
