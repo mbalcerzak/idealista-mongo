@@ -53,32 +53,51 @@ def today_str() -> str:
     return datetime.today().strftime('%Y-%m-%d')
 
 
-def get_flats(save_json=True, filename="data/scraped_api.json", n_pages=2000):
+class IdealistaParams:
+    def __init__(self):
+        self.locationId = "0-EU-ES-46"
+        self.operation = "sale"
+        self.propertyType = "homes"
+        self.maxItems = 50
+        self.minPrice = 1
+        self.maxPrice = 9999999
+        self.minSize = 40
+        self.order = "publicationDate"
+        self.sort = "desc"
+        self.locale = "es"
 
-    n_pages_x_request = n_pages  # number of pages to query
-    max_items_per_request = 50 # max current support is 50
-    min_price = 1
-    max_price = 9999999
-    minSize = 40
-    order = "publicationDate"
-    penthouse = "true"
+
+class DummyParams(IdealistaParams):
+    def __init__(self):
+        super().__init__()
+        self.maxItems=1
+
+
+class MabParams(IdealistaParams):
+    def __init__(self):
+        super().__init__()
+        self.penthouse = "true"
+        self.minSize = 50
+        self.maxPrice = 260_000
+        self.exterior = "true"
+        self.hasLift = "true"
+
+
+
+def get_flats(save_json=True, filename="data/scraped_api.json", n_pages_x_request = 2000, search="standard"):
+
+
+    # 
 
     with open(".db_creds/idealista_cred.json", "r") as f:
         creds_all = json.load(f)
-
-    # fresh_creds = creds_all[3]
 
     today = today_str()
     result = None
     fresh_creds = None
 
     response = None
-    dummy_params = {
-        "locationId": "0-EU-ES-46", 
-        "operation": "sale", 
-        "propertyType": "homes", 
-        "numPage": 1
-        }
+    dummy_params = DummyParams()
     
     for i, creds in enumerate(creds_all):
         print(f"({i+1}) {creds=}")
@@ -101,20 +120,8 @@ def get_flats(save_json=True, filename="data/scraped_api.json", n_pages=2000):
 
             for n_page in range(1, n_pages_x_request):
 
-                params = {
-                    "operation": "sale",
-                    "locationId": "0-EU-ES-46",
-                    "propertyType": "homes",
-                    "penthouse": penthouse,
-                    "locale": "es",
-                    "maxItems": max_items_per_request,
-                    "maxPrice": max_price,
-                    "minPrice": min_price,
-                    "minSize": minSize,
-                    "numPage": n_page,
-                    "order": order,
-                    "sort": "desc"
-                }
+                params = IdealistaParams()
+                params["n_page"] = n_page
 
                 print(f"\tPage:{n_page}")
 

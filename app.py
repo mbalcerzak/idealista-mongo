@@ -42,8 +42,9 @@ if chosen_code:
     chart_df = pd.DataFrame.from_dict(chart_data, orient='index')
     st.line_chart(chart_df)
 
+distr = flats_data[chosen_code]['district']
 
-# col1, col2, col3 = st.columns(3)
-# col1.metric("Temperature", "70 °F", "1.2 °F")
-# col2.metric("Wind", "9 mph", "-8%")
-# col3.metric("Humidity", "86%", "4%")
+col1, col2, col3 = st.columns(3)
+col1.metric("Price change: (max->min)", "70 °F", "1.2 °F")
+col2.metric(f"Compared to others in {distr}", "9 mph", "-8%")
+col3.metric(f"Price per m2", "86%", "4%")
