@@ -32,6 +32,7 @@ chosen_code = st.selectbox(
      index=len(propertyCodes)-1)
 
 flat = flats_data[chosen_code]
+print(f"{flat=}")
 
 st.image(flat['thumbnail'])
 st.markdown(f"[Go to the Idealista ad]({flat['url']})")
@@ -43,7 +44,7 @@ items_present = set(flat.keys()).intersection(item_list)
 
 characteristics = ""
 for elem in items_present:
-    characteristics += f"- {elem}: {flat[elem]}\n"
+    characteristics += f"- {elem}: **{flat[elem]}**\n"
     
 st.markdown(characteristics)
 
@@ -53,6 +54,7 @@ st.write(flat['description'])
 st.header("Price history")
 st.subheader(f" current price: {fmt_price(flat['price'])}")
 
+# chosen_code="99117599"
 if chosen_code:
     chart_data = data[chosen_code]
     dates = list(chart_data.keys())
@@ -74,8 +76,12 @@ diff_prc = round(diff/max_p*100,2)
 ################################  area  #########################################
 
 area_list = sorted(list(area_prices.keys()))
-area = flat['neighborhood']
-area_price = area_prices[area]
+if flat['municipality'] == 'València':
+    area = flat['neighborhood']
+    area_price = area_prices[area]
+else:
+    area = None
+
 flat_price_m2 = flat['priceByArea']
 
 ################################   price m2   #########################################
@@ -84,4 +90,5 @@ flat_price_m2 = flat['priceByArea']
 col1, col2, col3 = st.columns(3)
 col1.metric("Price change: (max->min)", fmt_price(diff), f"{diff_prc} %", delta_color="inverse")
 col2.metric(f"Price per m2 of this flat",  f"{fmt_price(flat_price_m2)}")
-col3.metric(f"Average price in {area}", f"{fmt_price(area_price)}")
+if area:
+    col3.metric(f"Average price in {area}", f"{fmt_price(area_price)}")
