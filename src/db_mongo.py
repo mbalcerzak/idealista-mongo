@@ -1,6 +1,7 @@
 import pymongo
 from pymongo import MongoClient, errors
 import json
+from argparse import ArgumentParser
 
 from crawler_api import get_flats
 
@@ -18,11 +19,9 @@ def get_db(permission:str="read"):
     return mydb
 
 
-def main():
-    flats = get_flats()
-
-    # with open("data/scraped_api.json", "r") as f:
-    #     flats = json.load(f)
+def main(args):
+    mab = args.mab
+    flats = get_flats(mab=mab)
 
     print(f"\nScraped flats: {len(flats)}\n")
 
@@ -75,4 +74,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = ArgumentParser()
+    parser.add_argument('-mab', '--mab', action="store_true")
+    args = parser.parse_args()
+
+    main(args)

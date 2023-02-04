@@ -54,7 +54,6 @@ st.subheader("Description")
 st.write(flat['description'])
 
 st.header("Price history")
-st.subheader(f" current price: {fmt_price(flat['price'])}")
 
 # chosen_code="99117599"
 if chosen_code:
@@ -73,6 +72,8 @@ min_p = min(prices)
 diff = min_p - max_p
 diff_prc = round(diff/max_p*100,2)
 
+current_price = chart_data[max(dates)]
+
 ################################  area  #########################################
 
 area_list = sorted(list(area_prices.keys()))
@@ -85,6 +86,7 @@ else:
 flat_price_m2 = flat['priceByArea']
 
 ################################   price m2   #########################################
+st.subheader(f" current price: {fmt_price(current_price)}")
 
 col1, col2, col3 = st.columns(3)
 col1.metric("Price change: (max->min)", fmt_price(diff), f"{diff_prc} %", delta_color="inverse")
