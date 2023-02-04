@@ -4,6 +4,7 @@ import numpy as np
 import urllib.request
 import json
 import plotly.graph_objects as go
+from PIL import Image
 
 
 def fmt_price(x:int):
@@ -32,10 +33,10 @@ chosen_code = st.selectbox(
      index=len(propertyCodes)-1)
 
 flat = flats_data[chosen_code]
-print(f"{flat=}")
 
-print(f"{flat['thumbnail']=}")
-st.image(flat['thumbnail'], width=80)
+img_url = flat['thumbnail']
+st.markdown(f"![img]({img_url})")
+
 st.markdown(f"[Go to the Idealista ad]({flat['url']})")
 
 st.header("House information")
