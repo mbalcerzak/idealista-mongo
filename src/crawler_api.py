@@ -2,6 +2,7 @@ import base64
 import os
 import requests
 import json
+import simplejson
 import configparser
 from datetime import datetime
 
@@ -53,33 +54,53 @@ def today_str() -> str:
     return datetime.today().strftime('%Y-%m-%d')
 
 
-def get_flats(save_json=True, filename="data/scraped_api.json", n_pages=2000):
+class BasicParams:
+    def __init__(self):
+        self.locationId = "0-EU-ES-46"
+        self.operation = "sale"
+        self.propertyType = "homes"
+        self.maxItems = 50
 
-    n_pages_x_request = n_pages  # number of pages to query
-    max_items_per_request = 50 # max current support is 50
-    min_price = 1
-    max_price = 9999999
-    minSize = 40
-    order = "publicationDate"
-    penthouse = "true"
+class IdealistaParams(BasicParams):
+    def __init__(self):
+        super().__init__()
+        self.minPrice = 1
+        self.maxPrice = 9999999
+        self.minSize = 50
+        self.order = "publicationDate"
+        self.sort = "desc"
+        self.locale = "es"
+
+
+class MabParams(BasicParams):
+    def __init__(self):
+        super().__init__()
+        self.penthouse = "true"
+        self.minSize = 50
+        self.maxPrice = 260_000
+        self.exterior = "true"
+        self.hasLift = "true"
+
+    
+class DummyParams(BasicParams):
+    def __init__(self):
+        super().__init__()
+        self.maxItems = 5
+        self.numPage = 1
+
+
+def get_flats(save_json=True, filename="data/scraped_api.json", n_pages_x_request = 2000, mab=False):
 
     with open(".db_creds/idealista_cred.json", "r") as f:
         creds_all = json.load(f)
 
-    # fresh_creds = creds_all[3]
-
     today = today_str()
     result = None
     fresh_creds = None
-
     response = None
-    dummy_params = {
-        "locationId": "0-EU-ES-46", 
-        "operation": "sale", 
-        "propertyType": "homes", 
-        "numPage": 1
-        }
-    
+
+    dummy_params = DummyParams().__dict__
+
     for i, creds in enumerate(creds_all):
         print(f"({i+1}) {creds=}")
         try:
@@ -90,37 +111,32 @@ def get_flats(save_json=True, filename="data/scraped_api.json", n_pages=2000):
                 fresh_creds = creds
                 break
 
-        except json.decoder.JSONDecodeError:
+        except (json.decoder.JSONDecodeError, simplejson.errors.JSONDecodeError):
             print(f"Creds {i+1} not working")
-            continue
+            continue 
+
+    print(f"{fresh_creds=}")
 
     if fresh_creds:
         try:
             idealista = Idealista(**fresh_creds)
             data = []
 
+            if mab:
+                params = MabParams().__dict__
+            else:
+                params = IdealistaParams().__dict__
+
+            print(f"{params=}")
+            
             for n_page in range(1, n_pages_x_request):
-
-                params = {
-                    "operation": "sale",
-                    "locationId": "0-EU-ES-46",
-                    "propertyType": "homes",
-                    "penthouse": penthouse,
-                    "locale": "es",
-                    "maxItems": max_items_per_request,
-                    "maxPrice": max_price,
-                    "minPrice": min_price,
-                    "minSize": minSize,
-                    "numPage": n_page,
-                    "order": order,
-                    "sort": "desc"
-                }
-
+                params["n_page"] = n_page
                 print(f"\tPage:{n_page}")
 
                 req_result = idealista.make_request("POST", params, country="es")
                 print(f"Number of flats: {len(data)}")
                 elements = req_result["elementList"]
+
                 data += elements
 
             if save_json:
@@ -142,4 +158,4 @@ def get_flats(save_json=True, filename="data/scraped_api.json", n_pages=2000):
 
 
 if __name__ == "__main__":
-    flats = get_flats(n_pages=5)
+    flats = get_flats(n_pages_x_request = 2, mab=False)
