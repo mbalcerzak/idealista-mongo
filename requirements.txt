@@ -1,0 +1,7 @@
+streamlit
+pandas
+numpy
+urllib.request
+json
+plotly
+pymongo
