@@ -34,7 +34,8 @@ chosen_code = st.selectbox(
 flat = flats_data[chosen_code]
 print(f"{flat=}")
 
-st.image(flat['thumbnail'])
+print(f"{flat['thumbnail']=}")
+st.image(flat['thumbnail'], width=80)
 st.markdown(f"[Go to the Idealista ad]({flat['url']})")
 
 st.header("House information")
@@ -68,10 +69,8 @@ prices = list(chart_data.values())
 max_p = max(prices)
 min_p = min(prices)
 
-
 diff = min_p - max_p
 diff_prc = round(diff/max_p*100,2)
-
 
 ################################  area  #########################################
 
@@ -85,7 +84,6 @@ else:
 flat_price_m2 = flat['priceByArea']
 
 ################################   price m2   #########################################
-
 
 col1, col2, col3 = st.columns(3)
 col1.metric("Price change: (max->min)", fmt_price(diff), f"{diff_prc} %", delta_color="inverse")
