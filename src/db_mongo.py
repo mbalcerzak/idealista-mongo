@@ -30,6 +30,7 @@ def main(args):
     db = get_db("admin")
     collection_flats = db["_flats"]
     collection_prices = db["_prices"]
+    collection_prices_nch = db["_prices_no_change"]
 
     new_flats, old_flats = 0,0
     new_flats_ids = []
@@ -61,6 +62,7 @@ def main(args):
 
         if len(list(mydoc)) > 0:
             print(f"Price remains the same: {flat_price}")
+            collection_prices_nch.insert_one(flat_price)
         else:
             collection_prices.insert_one(flat_price)
             if flat_price["propertyCode"] in new_flats_ids:
