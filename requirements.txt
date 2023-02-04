@@ -1,4 +1,4 @@
 pandas
 numpy
-urllib.request
-plotly.graph_objects
+urllib3
+plotly
