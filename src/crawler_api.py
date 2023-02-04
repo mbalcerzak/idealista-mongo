@@ -79,7 +79,7 @@ class MabParams(BasicParams):
         self.minSize = 50
         self.maxPrice = 260_000
         self.exterior = "true"
-        # self.hasLift = "true"
+        self.hasLift = "true"
 
     
 class DummyParams(BasicParams):
@@ -89,7 +89,7 @@ class DummyParams(BasicParams):
         self.numPage = 1
 
 
-def get_flats(save_json=True, filename="data/scraped_api.json", n_pages_x_request = 2, mab=False):
+def get_flats(save_json=True, filename="data/scraped_api.json", n_pages_x_request = 2000, mab=False):
 
     with open(".db_creds/idealista_cred.json", "r") as f:
         creds_all = json.load(f)
@@ -137,7 +137,6 @@ def get_flats(save_json=True, filename="data/scraped_api.json", n_pages_x_reques
                 print(f"Number of flats: {len(data)}")
                 elements = req_result["elementList"]
 
-                print(f"{elements=}")
                 data += elements
 
             if save_json:
@@ -159,4 +158,4 @@ def get_flats(save_json=True, filename="data/scraped_api.json", n_pages_x_reques
 
 
 if __name__ == "__main__":
-    flats = get_flats(mab=True)
+    flats = get_flats(n_pages_x_request = 2, mab=False)
