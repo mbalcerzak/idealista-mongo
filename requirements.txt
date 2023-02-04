@@ -1,0 +1,4 @@
+pandas
+numpy
+urllib.request
+plotly.graph_objects
