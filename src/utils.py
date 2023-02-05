@@ -14,35 +14,25 @@ def strip_dict_short(d:dict) -> dict:
     return {k:v for k,v in d.items() if k in ["price","date"]}
 
 
-def get_flats_multiprice_max() -> list:
-    """Returns data for flats with the highest number of price changes"""
+def get_flats_multiprice_max(min_count=3) -> list:
+    """
+    Returns data for flats with the highest number of price changes
+    with a set minimum
+    """
     mydb = get_db()
-
     collection_prices = mydb["_prices"]
-
-    issue_list = []
+    max_pricesflats = []
 
     name_cursor = collection_prices.aggregate([
         {'$group': {'_id':'$propertyCode', 'count': {'$sum': 1}}}, 
         {'$match': {'count': {'$gt': 1}}},
         {"$sort": {"count" : -1} }
         ])
-    max_records = 0
     
     for document in name_cursor:
-        if document["count"] > max_records:
-            max_records = document["count"]
-            max_pricesflats = []
-
-        issue_list.append(strip_dict(document))
-
-        if document["count"] == max_records and document["_id"] not in max_pricesflats:
+        if document["count"] >= min_count and document["_id"] not in max_pricesflats:
             max_pricesflats.append(document["_id"])
 
-    with open("data/flat_count.json", "w") as f:
-        json.dump(issue_list, f)
-
-    print(f"Max number of prices per flat: {max_records}")
     print(f"Flats IDs: {max_pricesflats}")
 
     return max_pricesflats
@@ -65,23 +55,7 @@ def get_price_records_data(max_pricesflats:list):
         doc_data_sorted = dict(sorted(doc_data.items()))
         results[procertyCode] = doc_data_sorted
 
-    with open("output/most_price_changes.json", "w") as f:
-        json.dump(json.loads(dumps(results)), f)
-
-
-def get_flats_id(n:int=2) -> list:
-    """Returns IDs of flats that have more than N prices"""
-    mydb = get_db()
-
-    collection_prices = mydb["_prices"]
-
-    name_cursor = collection_prices.aggregate([
-        {'$group': {'_id':'$propertyCode', 'count': {'$sum': 1}}}, 
-        {'$match': {'count': {'$gt': n}}},
-        {"$sort": {"count" : -1} }
-        ])
-
-    return [x["_id"] for x in name_cursor]
+    return results
 
 
 def save_prices():
@@ -101,7 +75,6 @@ def upload_prices():
         prices = json.load(f)
 
     chosen_keys = ["propertyCode", "date", "price"]
-
     flat_prices = [{k:v for k,v in flat.items() if k in chosen_keys} for flat in prices]
 
     for flat_price in flat_prices:
@@ -110,7 +83,6 @@ def upload_prices():
             "price": flat_price["price"]
             }
         mydoc = collection_prices.find(myquery)
-
         flat_price["price"] = int(flat_price["price"])
 
         if len(list(mydoc)) > 0:
@@ -154,9 +126,7 @@ def get_avg_prices_district():
     mydb = get_db()
     collection_flats = mydb["_flats"] 
     collection_prices = mydb["_prices"] 
-
-    # TODO add flats._prices_no_change to the analysis
-
+    # collection_prices_nchg = mydb["_prices_no_change"] 
 
     # ['_id', 'propertyCode', 'thumbnail', 'externalReference', 'numPhotos', 'price', 'propertyType', 
     # 'operation', 'size', 'exterior', 'rooms', 'bathrooms', 'address', 'province', 'municipality', 
@@ -175,7 +145,15 @@ def get_avg_prices_district():
 
     prices = df_prices[['propertyCode', 'price', 'date']]
 
-    result = pd.merge(prices, flats, on="propertyCode")
+    # prices_nchg = collection_prices_nchg.find()
+    # df_prices_nchg = pd.DataFrame(list(prices_nchg))
+
+    # prices_nchg = df_prices_nchg[['propertyCode', 'price', 'date']]
+
+    # prices_all = pd.concat([prices, prices_nchg])
+    prices_all = prices
+
+    result = pd.merge(prices_all, flats, on="propertyCode")
     result["month"] = result["date"].apply(lambda x: x[:7])
     result["price_m2"] = result["price"]/result["size"]
 
@@ -185,30 +163,85 @@ def get_avg_prices_district():
     json_district = df_to_json(grouped_district, "district")
     json_neighborhood = df_to_json(grouped_neighborhood, "neighborhood")
 
-    with open("output/avg_district_prices.json", "w") as f:
-        json.dump(json_district, f)
-
-    with open("output/avg_neighborhood_prices.json", "w") as f:
-        json.dump(json_neighborhood, f)
+    return json_district, json_neighborhood
 
 
-def update_flat_data():
-    with open("output/most_price_changes.json", "r") as f:
-        data = json.load(f)
-
+def get_full_flat_data(data):
     ids = data.keys()
-
     flat_data = {}
 
     for id in ids:
-        flat_data[id] = get_flat_info(id)
+        flat_info = get_flat_info(id)
+        if flat_info["municipality"] == "València":
+            flat_data[id] = flat_info
 
-    with open("output/flat_data.json", "w") as f:
-        json.dump(flat_data, f)  
+    return flat_data 
 
+
+def get_highset_price_diff():
+    mydb = get_db()
+    collection_prices = mydb["_prices"]
+    prices = collection_prices.find()
+
+    name_cursor = collection_prices.aggregate([
+        {'$group': {'_id':'$propertyCode', 'count': {'$sum': 1}}}, 
+        {'$match': {'count': {'$gt': 2}}},
+        {"$sort": {"count" : -1} }
+        ])
+
+    ids = [x["_id"] for x in name_cursor]
+
+    flats_multiple_prices = defaultdict(list)
+
+    for id in ids:
+        prices_flat = collection_prices.find({"propertyCode":id},{"_id":0})
+        for record in prices_flat:
+            code = record["propertyCode"]
+            flats_multiple_prices[code].append(record["price"])
+
+    for code, prices in flats_multiple_prices.items():
+        diff = round((min(prices) - max(prices))/max(prices)*100)
+        print(f"{code}: {diff}")
+
+
+def get_price_diff(ids):
+    mydb = get_db()
+    collection_prices = mydb["_prices"]
+
+    flats_multiple_prices = defaultdict(list)
+    results = {}
+
+    for id in ids:
+        prices_flat = collection_prices.find({"propertyCode":id},{"_id":0})
+        for record in prices_flat:
+            code = record["propertyCode"]
+            flats_multiple_prices[code].append(record["price"])
+
+    for code, prices in flats_multiple_prices.items():
+        diff = round((min(prices) - max(prices))/max(prices)*100)
+        results[code] = diff
+
+    return results
+
+
+def get_flats_id(n:int=2) -> list:
+    """Returns IDs of flats that have more than N prices"""
+    mydb = get_db()
+
+    collection_prices = mydb["_prices"]
+
+    name_cursor = collection_prices.aggregate([
+        {'$group': {'_id':'$propertyCode', 'count': {'$sum': 1}}}, 
+        {'$match': {'count': {'$gt': n}}},
+        {"$sort": {"count" : -1} }
+        ])
+
+    return [x["_id"] for x in name_cursor]
+
+    
 
 if __name__ == "__main__":
     # price_changes = get_flats_id()
     # get_price_records_data(price_changes)
-
-    get_avg_prices_district()
+    # get_avg_prices_district()
+    get_highset_price_diff()

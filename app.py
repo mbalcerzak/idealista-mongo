@@ -19,11 +19,9 @@ def get_characteristics():
         characteristics += f"- {elem}: **{flat[elem]}**\n"
     return characteristics
     
-mab_github = "https://raw.githubusercontent.com/mbalcerzak/idealista-mongo/data-vis"
-max_prices_url = f"{mab_github}/output/most_price_changes.json"
 
-with urllib.request.urlopen(max_prices_url) as url:
-    price_change_data = json.load(url)
+with open("output/most_price_changes.json", "r") as f:
+    price_change_data = json.load(f)
 
 with open("output/flat_data.json", "r") as f:
     flats_data = json.load(f)   
@@ -34,14 +32,22 @@ with open("output/avg_district_prices.json", "r") as f:
 with open("output/avg_neighborhood_prices.json", "r") as f:
     neighborhood_prices = json.load(f)
 
-propertyCodes = list(price_change_data.keys())
+with open("output/max_price_diffs.json", "r") as f:
+    max_price_diffs = json.load(f)
+
+
+propertyCodes = list(flats_data.keys())
+propCodes = [f"{k} ({v} %)" for k,v in max_price_diffs.items() if k in propertyCodes]
+print(propCodes)
 
 st.title("Idealista scraper") 
 
 chosen_code = st.selectbox(
      'Pick the Property Code',
-     propertyCodes
+     propCodes
      )
+
+chosen_code = chosen_code.split(" ")[0]
 
 flat = flats_data[chosen_code]
 flat_price_change = price_change_data[chosen_code]
