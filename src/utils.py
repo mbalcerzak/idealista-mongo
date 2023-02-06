@@ -33,8 +33,6 @@ def get_flats_multiprice_max(min_count=3) -> list:
         if document["count"] >= min_count and document["_id"] not in max_pricesflats:
             max_pricesflats.append(document["_id"])
 
-    print(f"Flats IDs: {max_pricesflats}")
-
     return max_pricesflats
     
 
@@ -126,7 +124,7 @@ def get_avg_prices_district():
     mydb = get_db()
     collection_flats = mydb["_flats"] 
     collection_prices = mydb["_prices"] 
-    # collection_prices_nchg = mydb["_prices_no_change"] 
+    collection_prices_nchg = mydb["_prices_no_change"] 
 
     # ['_id', 'propertyCode', 'thumbnail', 'externalReference', 'numPhotos', 'price', 'propertyType', 
     # 'operation', 'size', 'exterior', 'rooms', 'bathrooms', 'address', 'province', 'municipality', 
@@ -145,13 +143,11 @@ def get_avg_prices_district():
 
     prices = df_prices[['propertyCode', 'price', 'date']]
 
-    # prices_nchg = collection_prices_nchg.find()
-    # df_prices_nchg = pd.DataFrame(list(prices_nchg))
+    prices_nchg = collection_prices_nchg.find()
+    df_prices_nchg = pd.DataFrame(list(prices_nchg))
+    prices_nchg = df_prices_nchg[['propertyCode', 'price', 'date']]
 
-    # prices_nchg = df_prices_nchg[['propertyCode', 'price', 'date']]
-
-    # prices_all = pd.concat([prices, prices_nchg])
-    prices_all = prices
+    prices_all = pd.concat([prices, prices_nchg])
 
     result = pd.merge(prices_all, flats, on="propertyCode")
     result["month"] = result["date"].apply(lambda x: x[:7])
