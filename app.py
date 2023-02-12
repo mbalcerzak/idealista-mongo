@@ -35,10 +35,8 @@ with open("output/avg_neighborhood_prices.json", "r") as f:
 with open("output/max_price_diffs.json", "r") as f:
     max_price_diffs = json.load(f)
 
-
 propertyCodes = list(flats_data.keys())
 propCodes = [f"{k} ({v} %)" for k,v in max_price_diffs.items() if k in propertyCodes]
-print(propCodes)
 
 st.title("Idealista scraper") 
 
@@ -53,8 +51,9 @@ flat = flats_data[chosen_code]
 flat_price_change = price_change_data[chosen_code]
 size = flat["size"]
 
-img_url = flat['thumbnail']
-st.markdown(f"![img]({img_url})")
+if 'thumbnail' in flat:
+    img_url = flat['thumbnail']
+    st.markdown(f"![img]({img_url})")
 st.markdown(f"[Go to the Idealista ad]({flat['url']})")
 
 st.header("House information")

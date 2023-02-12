@@ -1,18 +1,11 @@
 from utils import get_flats_multiprice_max, get_price_records_data, \
                     get_full_flat_data, get_avg_prices_district, get_price_diff
 import json
-from bson.json_util import dumps
-
-
-def save_price_records_data(results):
-    with open("output/most_price_changes.json", "w") as f:
-        json.dump(json.loads(dumps(results)), f)
 
 
 def save_json(file, filename):
     with open(f"output/{filename}.json", "w") as f:
         json.dump(file, f)
-
 
 
 if __name__ == "__main__":  
