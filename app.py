@@ -35,6 +35,7 @@ with open("output/avg_neighborhood_prices.json", "r") as f:
 with open("output/max_price_diffs.json", "r") as f:
     max_price_diffs = json.load(f)
 
+
 propertyCodes = list(flats_data.keys())
 propCodes = [f"{k} ({v} %)" for k,v in max_price_diffs.items() if k in propertyCodes]
 
@@ -61,11 +62,14 @@ st.header("House information")
 characteristics = get_characteristics()  
 st.markdown(characteristics)
 
-st.subheader("Description")
-st.write(flat['description'])
+if 'description' in flat:
+    st.subheader("Description")
+    st.write(flat['description'])
+
 st.header("Price history")
 
 ################################  area  #########################################
+
 
 if 'neighborhood' in list(flat):
     neighborhood = flat['neighborhood']
@@ -74,7 +78,7 @@ if 'neighborhood' in list(flat):
     neighborhood_price = neighborhood_prices[latest_n]["price"]
 
     neigh_prices = [x["price"] for x in list(neighborhood_prices.values())]
-    neigh_prices_size = [x*size for x in neigh_prices]
+    neigh_prices_size = [int(x*size) for x in neigh_prices]
     neigh_dates = list(neighborhood_prices.keys())
 
     neigh_diff = (max(neigh_prices) - min(neigh_prices))/max(neigh_prices)
@@ -89,7 +93,7 @@ if 'district' in list(flat):
     district_price = district_prices[latest_d]["price"]
 
     distr_prices = [x["price"] for x in list(district_prices.values())]
-    distr_prices_size = [x*size for x in distr_prices]
+    distr_prices_size = [int(x*size) for x in distr_prices]
     distr_dates = list(district_prices.keys())
 
     distr_diff = (max(distr_prices) - min(distr_prices))/max(distr_prices)
@@ -104,13 +108,14 @@ flat_dates = list(flat_price_change.keys())
 
 current_price = flat_price_change[max(flat_dates)]
 st.subheader(f" current price: {fmt_price(current_price)}")
-# distr_chng_show = st.radio("Show district price changes",('Yes', 'No'),index=1, )
+distr_chng_show = st.radio("Show district price changes",('Yes', 'No'),index=1, )
 
 fig = go.Figure()
 fig.add_trace(go.Scatter(x=flat_dates, y=flat_prices, name="Flat"))
-# if distr_chng_show == "Yes":
-#     fig.add_trace(go.Scatter(x=neigh_dates, y=neigh_prices_size, name="neighborhood"))
-#     fig.add_trace(go.Scatter(x=distr_dates, y=distr_prices_size, name="district"))
+if distr_chng_show == "Yes":
+    fig.add_trace(go.Scatter(x=neigh_dates, y=neigh_prices_size, name="neighborhood"))
+    fig.add_trace(go.Scatter(x=distr_dates, y=distr_prices_size, name="district"))
+    fig.update_layout(hovermode='x unified')
 
 st.plotly_chart(fig)
 

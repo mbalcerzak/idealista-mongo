@@ -21,7 +21,8 @@ def get_db(permission:str="read"):
 
 def main(args):
     mab = args.mab
-    flats = get_flats(mab=mab)
+    n_pages_x_request = args.pages 
+    flats = get_flats(mab=mab, n_pages_x_request=n_pages_x_request)
 
     print(f"\nScraped flats: {len(flats)}\n")
 
@@ -78,6 +79,7 @@ def main(args):
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument('-mab', '--mab', action="store_true")
+    parser.add_argument("-pages", "--pages", action="store", type=int, choices=range(2, 2001))
     args = parser.parse_args()
 
     main(args)

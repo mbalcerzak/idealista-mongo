@@ -76,8 +76,8 @@ class MabParams(BasicParams):
     def __init__(self):
         super().__init__()
         self.penthouse = "true"
-        self.minSize = 50
-        self.maxPrice = 260_000
+        self.minSize = 70
+        self.maxPrice = 270_000
         self.exterior = "true"
         self.hasLift = "true"
 
