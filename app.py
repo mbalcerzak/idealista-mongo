@@ -35,12 +35,19 @@ with open("output/avg_neighborhood_prices.json", "r") as f:
 with open("output/max_price_diffs.json", "r") as f:
     max_price_diffs = json.load(f)
 
-
 propertyCodes = list(flats_data.keys())
-propCodes = [f"{k} ({v} %)" for k,v in max_price_diffs.items() if k in propertyCodes]
+propertyCodesPent = [k for k,v in flats_data.items() if v["propertyType"] == "penthouse"]
 
 st.title("Idealista scraper") 
 
+penthouse = st.radio("Penthouse only",('Yes', 'No'),index=1)
+if penthouse == "Yes":
+    propCodes = [f"{k} ({v} %)" for k,v in max_price_diffs.items() if k in propertyCodesPent]
+    print(f"Penthouse: {len(propCodes)}")
+else:
+    propCodes = [f"{k} ({v} %)" for k,v in max_price_diffs.items() if k in propertyCodes]
+    print(f"Normal: {len(propCodes)}")
+    
 chosen_code = st.selectbox(
      'Pick the Property Code',
      propCodes
