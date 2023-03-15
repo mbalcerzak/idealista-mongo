@@ -40,8 +40,10 @@ propertyCodesPent = [k for k,v in flats_data.items() if v["propertyType"] == "pe
 
 st.title("Idealista scraper") 
 
-penthouse = st.radio("Penthouse only",('Yes', 'No'),index=1)
-if penthouse == "Yes":
+max_price_diffs = {x[0]:x[1] for x in max_price_diffs}
+
+penthouse = st.radio("Type of property",('Penthouse', 'House', 'All'), index=1)
+if penthouse == "Penthouse":
     propCodes = [f"{k} ({v} %)" for k,v in max_price_diffs.items() if k in propertyCodesPent]
     print(f"Penthouse: {len(propCodes)}")
 else:

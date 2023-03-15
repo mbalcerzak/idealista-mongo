@@ -217,7 +217,9 @@ def get_price_diff(ids):
         diff = round((min(prices) - max(prices))/max(prices)*100)
         results[code] = diff
 
-    return results
+    sorted_results = sorted(results.items(), key=lambda x:x[1])
+
+    return sorted_results
 
 
 def get_flats_id(n:int=2) -> list:

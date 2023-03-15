@@ -71,6 +71,17 @@ class IdealistaParams(BasicParams):
         self.sort = "desc"
         self.locale = "es"
 
+class HouseParams(BasicParams):
+    def __init__(self):
+        super().__init__()
+        self.minPrice = 1
+        self.maxPrice = 300000
+        self.minSize = 90
+        self.order = "publicationDate"
+        self.sort = "desc"
+        self.locale = "es"
+        self.chalet = "true"
+
 
 class MabParams(BasicParams):
     def __init__(self):
@@ -89,7 +100,7 @@ class DummyParams(BasicParams):
         self.numPage = 1
 
 
-def get_flats(save_json=True, filename="data/scraped_api.json", n_pages_x_request = 2000, mab=False):
+def get_flats(save_json=True, filename="data/scraped_api.json", n_pages_x_request = 2000, mab=False, house=False):
 
     with open(".db_creds/idealista_cred.json", "r") as f:
         creds_all = json.load(f)
@@ -124,6 +135,8 @@ def get_flats(save_json=True, filename="data/scraped_api.json", n_pages_x_reques
 
             if mab:
                 params = MabParams().__dict__
+            elif house:
+                params = HouseParams().__dict__
             else:
                 params = IdealistaParams().__dict__
 
@@ -158,4 +171,4 @@ def get_flats(save_json=True, filename="data/scraped_api.json", n_pages_x_reques
 
 
 if __name__ == "__main__":
-    flats = get_flats(n_pages_x_request = 2, mab=False)
+    flats = get_flats(n_pages_x_request = 2, mab=False, house=False)
