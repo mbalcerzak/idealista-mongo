@@ -42,7 +42,7 @@ st.title("Idealista scraper")
 
 max_price_diffs = {x[0]:x[1] for x in max_price_diffs}
 
-penthouse = st.radio("Type of property",('Penthouse', 'House', 'All'), index=1)
+penthouse = st.radio("Type of property",('Penthouse',  'All'), index=1)
 if penthouse == "Penthouse":
     propCodes = [f"{k} ({v} %)" for k,v in max_price_diffs.items() if k in propertyCodesPent]
     print(f"Penthouse: {len(propCodes)}")
