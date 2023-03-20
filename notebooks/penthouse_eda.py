@@ -2,6 +2,8 @@
 import json
 import pymongo
 import pandas as pd
+from datetime import date
+from dateutil.relativedelta import relativedelta
 
 
 def get_db(permission:str="read"):
@@ -53,13 +55,19 @@ def get_latest_dates(procertyCodes:list) -> dict:
     return results
 
 
+def get_cutoff_date(months_ago=2):
+    cutoff_date = date.today() + relativedelta(months=-months_ago)
+    return cutoff_date.strftime("%Y-%m-%d")
+
+
 def get_latest_price(ids_dates_dict: dict) -> dict:
     mydb = get_db()
     collection_prices = mydb["_prices"]
     results = {}
+    cutoff_date = get_cutoff_date()
 
     for id, date in ids_dates_dict.items():
-        if date > '2023-03-01':
+        if date > cutoff_date:
             flat = collection_prices.find({"propertyCode": id, "date": date})[0]
             results[flat['propertyCode']] = {'latestPrice': flat['price'], 'latestDate': flat['date']}
 
@@ -149,8 +157,8 @@ def json_into_df():
 
     df.to_parquet("../output/penthouses.parquet")
 
-    df["distrPriceDiff"] = df["distrPriceDiff"].apply(lambda x: f"{round(x*100,2)} %")
-    df["neighPriceDiff"] = df["neighPriceDiff"].apply(lambda x: f"{round(x*100,2)} %")
+    df["distrPriceDiff"] = df["distrPriceDiff"].apply(lambda x: round(x*100,2))
+    df["neighPriceDiff"] = df["neighPriceDiff"].apply(lambda x: round(x*100,2))
 
     df2 = df[["propertyCode","size", "price", "distrPriceDiff","neighPriceDiff", "url"]]
 
