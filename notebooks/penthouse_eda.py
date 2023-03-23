@@ -165,7 +165,7 @@ def json_into_df():
     df2.to_parquet("../output/penthouses_prc.parquet")
 
 if __name__ == "__main__":
-    # main()
+    main()
     json_into_df()
 
 

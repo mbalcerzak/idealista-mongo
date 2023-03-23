@@ -104,7 +104,14 @@ class DummyParams(BasicParams):
         self.numPage = 1
 
 
-def get_flats(save_json=True, filename="data/scraped_api.json", n_pages_x_request = 2000, mab=False, house=False, yolo_penthouse=False):
+def get_flats(
+        logger,
+        save_json=True, 
+        filename="data/scraped_api.json", 
+        n_pages_x_request = 2000, 
+        mab=False, 
+        house=False, 
+        yolo_penthouse=False):
 
     with open(".db_creds/idealista_cred.json", "r") as f:
         creds_all = json.load(f)
@@ -117,7 +124,7 @@ def get_flats(save_json=True, filename="data/scraped_api.json", n_pages_x_reques
     dummy_params = DummyParams().__dict__
 
     for i, creds in enumerate(creds_all):
-        print(f"({i+1}) {creds=}")
+        logger.info(f"({i+1}) {creds=}")
         try:
             idealista = Idealista(**creds)
             response = idealista.make_request("POST", dummy_params, country="es")
@@ -127,10 +134,10 @@ def get_flats(save_json=True, filename="data/scraped_api.json", n_pages_x_reques
                 break
 
         except (json.decoder.JSONDecodeError, simplejson.errors.JSONDecodeError):
-            print(f"Creds {i+1} not working")
+            logger.info(f"Creds {i+1} not working")
             continue 
 
-    print(f"{fresh_creds=}")
+    logger.info(f"{fresh_creds=}")
 
     if fresh_creds:
         try:
@@ -146,14 +153,14 @@ def get_flats(save_json=True, filename="data/scraped_api.json", n_pages_x_reques
             else:
                 params = IdealistaParams().__dict__
 
-            print(f"{params=}")
+            logger.info(f"{params=}")
             
             for n_page in range(1, n_pages_x_request):
                 params["n_page"] = n_page
-                print(f"\tPage:{n_page}")
+                logger.info(f"\tPage:{n_page}")
 
                 req_result = idealista.make_request("POST", params, country="es")
-                print(f"Number of flats: {len(data)}")
+                logger.info(f"Number of flats: {len(data)}")
                 elements = req_result["elementList"]
 
                 data += elements

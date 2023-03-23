@@ -11,4 +11,5 @@
     # 'district', 'neighborhood', 'parkingSpace', 'labels', 'newDevelopmentFinished']
 
 
+    TODO: check which penthouses are still online
     

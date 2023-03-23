@@ -1,6 +1,7 @@
 import pymongo
 from pymongo import MongoClient, errors
 import json
+import logging
 from argparse import ArgumentParser
 
 from crawler_api import get_flats
@@ -19,14 +20,14 @@ def get_db(permission:str="read"):
     return mydb
 
 
-def main(args):
+def main(args, logger):
     mab = args.mab
     house = args.house
     yolo_penthouse = args.yolo_penthouse
     n_pages_x_request = args.pages 
-    flats = get_flats(mab=mab, n_pages_x_request=n_pages_x_request, house=house, yolo_penthouse=yolo_penthouse)
+    flats = get_flats(logger, mab=mab, n_pages_x_request=n_pages_x_request, house=house, yolo_penthouse=yolo_penthouse)
 
-    print(f"\nScraped flats: {len(flats)}\n")
+    logger.info(f"\nScraped flats: {len(flats)}\n")
 
     flats_with_ids = [dict(flat, **{'_id':int(flat["propertyCode"])}) for flat in flats]
 
@@ -41,11 +42,11 @@ def main(args):
     for flat in flats_with_ids:    
         try:
             collection_flats.insert_one(flat)
-            print(f"New flat {flat['propertyCode']}")
+            logger.info(f"New flat {flat['propertyCode']}")
             new_flats += 1
             new_flats_ids.append(flat['propertyCode'])
         except errors.DuplicateKeyError as e:
-            print(f"Flat {flat['propertyCode']} exists")
+            logger.info(f"Flat {flat['propertyCode']} exists")
             old_flats += 1
             continue
 
@@ -64,7 +65,7 @@ def main(args):
         mydoc = collection_prices.find(myquery)
 
         if len(list(mydoc)) > 0:
-            print(f"Price remains the same: {flat_price}")
+            logger.info(f"Price remains the same: {flat_price}")
             collection_prices_nch.insert_one(flat_price)
         else:
             collection_prices.insert_one(flat_price)
@@ -73,9 +74,9 @@ def main(args):
             else:
                 comment = "PRICE CHANGE"
                 price_changes += 1
-            print(f"New price: {flat_price} --- {comment}")
+            logger.info(f"New price: {flat_price} --- {comment}")
 
-    print(f"Inserted: {new_flats}, {old_flats} found already existing. Price changes: {price_changes}")
+    logger.info(f"Inserted: {new_flats}, {old_flats} found already existing. Price changes: {price_changes}")
 
 
 if __name__ == "__main__":
@@ -86,4 +87,6 @@ if __name__ == "__main__":
     parser.add_argument("-pages", "--pages", action="store", type=int, choices=range(2, 2001))
     args = parser.parse_args()
 
-    main(args)
+    logger = logging.getLogger(f'flats')
+
+    main(args, logger)

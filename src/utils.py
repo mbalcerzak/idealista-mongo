@@ -84,10 +84,10 @@ def upload_prices():
         flat_price["price"] = int(flat_price["price"])
 
         if len(list(mydoc)) > 0:
-            print(f"Price remains the same: {flat_price}")
+            logger.info(f"Price remains the same: {flat_price}")
         else:
             collection_prices.insert_one(flat_price)
-            print(f"New price: {flat_price}")
+            logger.info(f"New price: {flat_price}")
 
 
 def get_flat_info(propertyCode:str):
@@ -195,7 +195,7 @@ def get_highset_price_diff():
 
     for code, prices in flats_multiple_prices.items():
         diff = round((min(prices) - max(prices))/max(prices)*100)
-        print(f"{code}: {diff}")
+        logger.info(f"{code}: {diff}")
 
 
 def get_price_diff(ids):
