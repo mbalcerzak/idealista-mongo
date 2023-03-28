@@ -5,18 +5,9 @@ import pandas as pd
 from datetime import date
 from dateutil.relativedelta import relativedelta
 
-
-def get_db(permission:str="read"):
-    with open("../.db_creds/creds_mongo_mab.json", "r") as f:
-        creds_mongo = json.load(f)[permission]
-    username = creds_mongo["username"]
-    password = creds_mongo["password"]
-
-    cluster = pymongo.MongoClient(
-        f"mongodb+srv://{username}:{password}@cluster0.io0gaio.mongodb.net/?retryWrites=true&w=majority"
-        )
-    mydb = cluster["flats"]
-    return mydb
+from flat_info import save_json
+from utils import get_price_records_data
+from db_mongo import get_db
 
 
 def find_penthouses():
@@ -86,7 +77,7 @@ def get_cutoff_date(months_ago=2):
 
 
 def get_latest_price_distr(dist):
-    with open("../output/avg_district_prices_pent.json", "r") as f:
+    with open("output/avg_district_prices_pent.json", "r") as f:
         distr_prices_pent_json = json.load(f)  
     distr_prices = distr_prices_pent_json[dist]
     latest_price = distr_prices[max(distr_prices)]["price"]
@@ -94,7 +85,7 @@ def get_latest_price_distr(dist):
     
 
 def get_latest_price_neigh(neighborhood):
-    with open("../output/avg_neighborhood_prices_pent.json", "r") as f:
+    with open("output/avg_neighborhood_prices_pent.json", "r") as f:
         neighborhood_prices_pent_json = json.load(f) 
     neigh_prices = neighborhood_prices_pent_json[neighborhood]
     latest_price = neigh_prices[max(neigh_prices)]["price"]
@@ -131,7 +122,7 @@ def get_price_data(id, flat_data, latest_date_prices, cutoff_date):
 
 
 def json_into_df():
-    with open("../output/cheap_penthouses.json", 'r') as f:
+    with open("output/cheap_penthouses.json", 'r') as f:
         data = json.load(f)
 
     chosen_cols = ["propertyCode","size", "price", "distrPrice", "distrPriceDiff", 
@@ -143,14 +134,14 @@ def json_into_df():
         flat_dict = {k:[v] for k,v in info.items() if k in chosen_cols}
         df = pd.concat([df, pd.DataFrame.from_dict(flat_dict)], ignore_index=True)
 
-    df.to_parquet("../output/penthouses.parquet")
+    df.to_parquet("output/penthouses.parquet")
 
     df["distrPriceDiff"] = df["distrPriceDiff"].apply(lambda x: round(x*100,2))
     df["neighPriceDiff"] = df["neighPriceDiff"].apply(lambda x: round(x*100,2))
 
     df2 = df[["propertyCode","size", "price", "distrPriceDiff","neighPriceDiff", "url"]]
 
-    df2.to_parquet("../output/penthouses_prc.parquet")
+    df2.to_parquet("output/penthouses_prc.parquet")
 
 
 
@@ -174,13 +165,17 @@ def main():
 
     print(f"How many penthouses: {len(cheap_penthouses)}")
 
-    with open("../output/cheap_penthouses.json", 'w') as f:
-        json.dump(cheap_penthouses, f)
+    save_json(cheap_penthouses, "cheap_penthouses")
+
+    penthouses_price_history = get_price_records_data(cheap_penthouses.keys())
+    save_json(penthouses_price_history, "penthouses_price_history")
 
 
 if __name__ == "__main__":
     main()
     json_into_df()
+
+    
 
 
 

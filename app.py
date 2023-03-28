@@ -21,10 +21,13 @@ def get_characteristics():
     
 
 with open("output/most_price_changes.json", "r") as f:
-    price_change_data = json.load(f)
+    price_change_data_all = json.load(f)
+
+with open("output/penthouses_price_history.json", "r") as f:
+    price_change_data_pent = json.load(f)
 
 with open("output/flat_data.json", "r") as f:
-    flats_data = json.load(f)   
+    flats_data_all = json.load(f)   
 
 with open("output/avg_district_prices.json", "r") as f:
     distr_prices_json = json.load(f)
@@ -41,18 +44,27 @@ with open("output/avg_neighborhood_prices_pent.json", "r") as f:
 with open("output/max_price_diffs.json", "r") as f:
     max_price_diffs = json.load(f)
 
-propertyCodes = list(flats_data.keys())
-propertyCodesPent = [k for k,v in flats_data.items() if v["propertyType"] == "penthouse"]
+with open("output/cheap_penthouses.json", "r") as f:
+    cheap_penthouses = json.load(f)
+
+propertyCodes = list(flats_data_all.keys())
+propertyCodesPent = list(cheap_penthouses.keys())
 
 st.title("Idealista scraper") 
 
 max_price_diffs = {x[0]:x[1] for x in max_price_diffs}
 
 penthouse = st.radio("Type of property",('Penthouse',  'All'), index=1)
+
 if penthouse == "Penthouse":
-    propCodes = [f"{k} ({v} %)" for k,v in max_price_diffs.items() if k in propertyCodesPent]
+    # propCodes = [f"{k} ({v} %)" for k,v in max_price_diffs.items() if k in propertyCodesPent]
+    propCodes = [f"{k} ({round(v['distrPriceDiff']*100):+d} %)" for k,v in cheap_penthouses.items() if k in propertyCodesPent]
+    flats_data = cheap_penthouses
+    price_change_data = price_change_data_pent
 else:
     propCodes = [f"{k} ({v} %)" for k,v in max_price_diffs.items() if k in propertyCodes]
+    flats_data = flats_data_all
+    price_change_data = price_change_data_all
 
 chosen_code = st.selectbox(
      'Pick the Property Code',
@@ -144,8 +156,11 @@ current_price = flat_price_change[max(flat_dates)]
 
 
 st.subheader(f" current price: {fmt_price(current_price)}")
-distr_chng_show = st.radio("Show avg district price changes",('Yes', 'No'),index=1, )
-distr_chng_show_p = st.radio("Show avg penthouse prices",('Yes', 'No'),index=1, )
+col1, col2 = st.columns(2)
+with col1:
+    distr_chng_show = st.radio("Show avg district price changes",('Yes', 'No'),index=1, )
+with col2:
+    distr_chng_show_p = st.radio("Show avg penthouse prices",('Yes', 'No'),index=1, )
 
 fig = go.Figure()
 fig.add_trace(go.Scatter(x=flat_dates, y=flat_prices, name="Flat"))
@@ -192,7 +207,7 @@ if neighborhood:
          delta_color="inverse")
 
 
-st.subheader("Penthouse stats")
+st.subheader("Penthouses stats")
 col1, col2, col3 = st.columns(3)
 col1.metric(
     "Price of this flat per m2", 
