@@ -35,22 +35,47 @@ def find_penthouses():
         stats['data'] = flat
         result[flat["propertyCode"]] = stats 
 
-    return result
+    return result, result.keys()
 
 
-def get_latest_dates(procertyCodes:list) -> dict:
-    """Takes a list of flat IDs and returns the date of latest price update"""
+def get_latest_dates_prices(penthouse_ids) -> dict:
+    """Takes a list of flat IDs and returns the date of latest price record"""
     mydb = get_db()
     collection_prices = mydb["_prices"]
+    collection_prices_nc = mydb["_prices_no_change"]
 
     name_cursor = collection_prices.aggregate([
-        {'$group': {'_id':'$propertyCode', 'date': {'$max': "$date"}}}
+        {'$group': {
+             '_id':'$propertyCode', 
+             'date': {'$max': "$date"}, 
+             'price': {'$first': '$price' }
+             }},
+        
         ])
     
+    name_cursor_nc = collection_prices_nc.aggregate([
+        {'$group': {
+             '_id':'$propertyCode', 
+             'date': {'$max': "$date"}, 
+             'price': {'$first': '$price' }
+             }},
+        
+        ])
+
     results = {}
+
     for cur in name_cursor:
-        if cur["_id"] in procertyCodes:
-            results[cur["_id"]] = cur["date"]
+        if cur["_id"] in penthouse_ids:
+            results[cur["_id"]] = {'date':cur["date"], 'price':cur["price"]}
+
+    for cur_nc in name_cursor_nc:
+        if cur_nc["_id"] in results:
+            if results[cur_nc["_id"]]["date"] < cur_nc["date"]:
+                results[cur_nc["_id"]]["date"] = cur_nc["date"]
+                results[cur_nc["_id"]]["price"] = cur_nc["price"]
+        else:
+            if cur_nc["_id"] in penthouse_ids:
+                results[cur_nc["_id"]] = {cur_nc["date"]: cur_nc["price"]}
 
     return results
 
@@ -58,20 +83,6 @@ def get_latest_dates(procertyCodes:list) -> dict:
 def get_cutoff_date(months_ago=2):
     cutoff_date = date.today() + relativedelta(months=-months_ago)
     return cutoff_date.strftime("%Y-%m-%d")
-
-
-def get_latest_price(ids_dates_dict: dict) -> dict:
-    mydb = get_db()
-    collection_prices = mydb["_prices"]
-    results = {}
-    cutoff_date = get_cutoff_date()
-
-    for id, date in ids_dates_dict.items():
-        if date > cutoff_date:
-            flat = collection_prices.find({"propertyCode": id, "date": date})[0]
-            results[flat['propertyCode']] = {'latestPrice': flat['price'], 'latestDate': flat['date']}
-
-    return results
 
 
 def get_latest_price_distr(dist):
@@ -82,7 +93,6 @@ def get_latest_price_distr(dist):
     return latest_price
     
 
-
 def get_latest_price_neigh(neighborhood):
     with open("../output/avg_neighborhood_prices_pent.json", "r") as f:
         neighborhood_prices_pent_json = json.load(f) 
@@ -91,55 +101,33 @@ def get_latest_price_neigh(neighborhood):
     return latest_price
 
 
+def get_price_data(id, flat_data, latest_date_prices, cutoff_date):
+    if any([id not in latest_date_prices,'district' not in flat_data, 'neighborhood'not in flat_data]):
+        return
+    else:
+        if latest_date_prices[id]['date'] < cutoff_date:
+            return
 
-
-def get_price_data(id, flat_data, results):
     flat_size = flat_data['size']
     district_price_size = 0
     neighborhood_price_size = 0
 
     areaPrice = flat_data['data']['priceByArea']
 
-    if 'district' in flat_data:
-        district_price = get_latest_price_distr(flat_data['district'])
-        district_price_size = flat_size * district_price
-        flat_data['data']['distrPrice'] = district_price
-        flat_data['data']['distrPriceDiff'] = (areaPrice - district_price)/district_price
-    else:
-        return
+    district_price = get_latest_price_distr(flat_data['district'])
+    district_price_size = flat_size * district_price
+    flat_data['data']['distrPrice'] = district_price
+    flat_data['data']['distrPriceDiff'] = (areaPrice - district_price)/district_price
 
-    if 'neighborhood' in flat_data:
-        neighborhood_price = get_latest_price_neigh(flat_data['neighborhood'])
-        neighborhood_price_size = flat_size * neighborhood_price
-        flat_data['data']['neighPrice'] = neighborhood_price
-        flat_data['data']['neighPriceDiff'] = (areaPrice - neighborhood_price)/neighborhood_price
-    else:
-        return
+    neighborhood_price = get_latest_price_neigh(flat_data['neighborhood'])
+    neighborhood_price_size = flat_size * neighborhood_price
+    flat_data['data']['neighPrice'] = neighborhood_price
+    flat_data['data']['neighPriceDiff'] = (areaPrice - neighborhood_price)/neighborhood_price
 
-    if id in results:
-        latest_flat_price = results[id]['latestPrice']
-    else:
-        return
+    latest_flat_price = latest_date_prices[id]['price']
 
     if district_price_size > latest_flat_price or neighborhood_price_size > latest_flat_price:
         return flat_data['data']
-
-
-def main():
-    penthouses_data = find_penthouses()
-    penhouse_latest_dates = get_latest_dates(penthouses_data)
-    results = get_latest_price(penhouse_latest_dates)
-
-    cheap_penthouses = {}
-    for penthouse_id, penthouse_data in penthouses_data.items():
-        penthouse_data = get_price_data(penthouse_id, penthouse_data, results)
-        if penthouse_data:
-            cheap_penthouses[penthouse_id] = penthouse_data
-
-    print(f"How many penthouses: {len(cheap_penthouses)}")
-
-    with open("../output/cheap_penthouses.json", 'w') as f:
-        json.dump(cheap_penthouses, f)
 
 
 def json_into_df():
@@ -152,8 +140,8 @@ def json_into_df():
     df = pd.DataFrame(columns=chosen_cols)
 
     for _, info in data.items():
-        flat_dict = {k:v for k,v in info.items() if k in chosen_cols}
-        df = df.append(flat_dict, ignore_index=True)
+        flat_dict = {k:[v] for k,v in info.items() if k in chosen_cols}
+        df = pd.concat([df, pd.DataFrame.from_dict(flat_dict)], ignore_index=True)
 
     df.to_parquet("../output/penthouses.parquet")
 
@@ -163,6 +151,32 @@ def json_into_df():
     df2 = df[["propertyCode","size", "price", "distrPriceDiff","neighPriceDiff", "url"]]
 
     df2.to_parquet("../output/penthouses_prc.parquet")
+
+
+
+def main():
+    """
+    1. Find most recent penthouses
+    2. Check latest price record for each
+    3. Calculate relative diff between the m2 price in the area
+    4. Return a list of most extreme cases
+    """
+    cutoff_date = get_cutoff_date()
+
+    penthouses_data, penthouse_ids = find_penthouses()
+    latest_date_prices = get_latest_dates_prices(penthouse_ids)
+
+    cheap_penthouses = {}
+    for penthouse_id, penthouse_data in penthouses_data.items():
+        penthouse_data = get_price_data(penthouse_id, penthouse_data, latest_date_prices, cutoff_date)
+        if penthouse_data:
+            cheap_penthouses[penthouse_id] = penthouse_data
+
+    print(f"How many penthouses: {len(cheap_penthouses)}")
+
+    with open("../output/cheap_penthouses.json", 'w') as f:
+        json.dump(cheap_penthouses, f)
+
 
 if __name__ == "__main__":
     main()

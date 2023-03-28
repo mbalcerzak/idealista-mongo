@@ -88,7 +88,7 @@ class MabParams(BasicParams):
         super().__init__()
         self.penthouse = "true"
         self.minSize = 70
-        self.maxPrice = 270_000
+        self.maxPrice = 300_000
         self.exterior = "true"
         self.hasLift = "true"
 
@@ -105,7 +105,6 @@ class DummyParams(BasicParams):
 
 
 def get_flats(
-        logger,
         save_json=True, 
         filename="data/scraped_api.json", 
         n_pages_x_request = 2000, 
@@ -124,7 +123,7 @@ def get_flats(
     dummy_params = DummyParams().__dict__
 
     for i, creds in enumerate(creds_all):
-        logger.info(f"({i+1}) {creds=}")
+        print(f"({i+1}) {creds=}")
         try:
             idealista = Idealista(**creds)
             response = idealista.make_request("POST", dummy_params, country="es")
@@ -134,10 +133,10 @@ def get_flats(
                 break
 
         except (json.decoder.JSONDecodeError, simplejson.errors.JSONDecodeError):
-            logger.info(f"Creds {i+1} not working")
+            print(f"Creds {i+1} not working")
             continue 
 
-    logger.info(f"{fresh_creds=}")
+    print(f"{fresh_creds=}")
 
     if fresh_creds:
         try:
@@ -153,14 +152,14 @@ def get_flats(
             else:
                 params = IdealistaParams().__dict__
 
-            logger.info(f"{params=}")
+            print(f"{params=}")
             
             for n_page in range(1, n_pages_x_request):
                 params["n_page"] = n_page
-                logger.info(f"\tPage:{n_page}")
+                print(f"\tPage:{n_page}")
 
                 req_result = idealista.make_request("POST", params, country="es")
-                logger.info(f"Number of flats: {len(data)}")
+                print(f"Number of flats: {len(data)}")
                 elements = req_result["elementList"]
 
                 data += elements

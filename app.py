@@ -65,12 +65,16 @@ flat = flats_data[chosen_code]
 flat_price_change = price_change_data[chosen_code]
 size = flat["size"]
 
+title = flat['suggestedTexts']["title"]
+subtitle = flat['suggestedTexts']["subtitle"]
+
+
 if 'thumbnail' in flat:
     img_url = flat['thumbnail']
     st.markdown(f"![img]({img_url})")
 st.markdown(f"[Go to the Idealista ad]({flat['url']})")
 
-st.header("House information")
+st.header(f"{title}: {subtitle}")
 
 characteristics = get_characteristics()  
 st.markdown(characteristics)
