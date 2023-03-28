@@ -120,19 +120,17 @@ def df_to_json(df, colname):
     return results
 
 
-def get_avg_prices_district():
+def get_avg_prices_district(penthouse=False):
     mydb = get_db()
     collection_flats = mydb["_flats"] 
     collection_prices = mydb["_prices"] 
     collection_prices_nchg = mydb["_prices_no_change"] 
 
-    # ['_id', 'propertyCode', 'thumbnail', 'externalReference', 'numPhotos', 'price', 'propertyType', 
-    # 'operation', 'size', 'exterior', 'rooms', 'bathrooms', 'address', 'province', 'municipality', 
-    # 'country', 'latitude', 'longitude', 'showAddress', 'url', 'description', 'hasVideo', 'status', 
-    # 'newDevelopment', 'priceByArea', 'detailedType', 'suggestedTexts', 'hasPlan', 'has3DTour', 
-    # 'has360', 'hasStaging', 'superTopHighlight', 'topNewDevelopment', 'date', 'floor', 'hasLift',
-    # 'district', 'neighborhood', 'parkingSpace', 'labels', 'newDevelopmentFinished']
-    flats = collection_flats.find()
+    if penthouse:
+        flats = collection_flats.find({"propertyType": "penthouse"})
+    else:
+        flats = collection_flats.find()
+        
     df_flats =  pd.DataFrame(list(flats))
 
     flats = df_flats[['propertyCode', 'district', 'neighborhood', 'size']]

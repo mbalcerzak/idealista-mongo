@@ -23,3 +23,6 @@ if __name__ == "__main__":
     save_json(json_district, "avg_district_prices")
     save_json(json_neighborhood, "avg_neighborhood_prices")
         
+    json_district, json_neighborhood = get_avg_prices_district(penthouse=True)
+    save_json(json_district, "avg_district_prices_pent")
+    save_json(json_neighborhood, "avg_neighborhood_prices_pent")

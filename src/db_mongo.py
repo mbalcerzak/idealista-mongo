@@ -1,6 +1,7 @@
 import pymongo
 from pymongo import MongoClient, errors
 import json
+import logging
 from argparse import ArgumentParser
 
 from crawler_api import get_flats
@@ -22,8 +23,9 @@ def get_db(permission:str="read"):
 def main(args):
     mab = args.mab
     house = args.house
+    yolo_penthouse = args.yolo_penthouse
     n_pages_x_request = args.pages 
-    flats = get_flats(mab=mab, n_pages_x_request=n_pages_x_request, house=house)
+    flats = get_flats(mab=mab, n_pages_x_request=n_pages_x_request, house=house, yolo_penthouse=yolo_penthouse)
 
     print(f"\nScraped flats: {len(flats)}\n")
 
@@ -81,6 +83,7 @@ if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument('-mab', '--mab', action="store_true")
     parser.add_argument('-house', '--house', action="store_true")
+    parser.add_argument('-yolo_penthouse', '--yolo_penthouse', action="store_true")
     parser.add_argument("-pages", "--pages", action="store", type=int, choices=range(2, 2001))
     args = parser.parse_args()
 

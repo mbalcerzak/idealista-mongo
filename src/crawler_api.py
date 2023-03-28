@@ -88,10 +88,14 @@ class MabParams(BasicParams):
         super().__init__()
         self.penthouse = "true"
         self.minSize = 70
-        self.maxPrice = 270_000
+        self.maxPrice = 300_000
         self.exterior = "true"
         self.hasLift = "true"
 
+class YoloPenthouse(BasicParams):
+    def __init__(self):
+        super().__init__()
+        self.penthouse = "true"
     
 class DummyParams(BasicParams):
     def __init__(self):
@@ -100,7 +104,13 @@ class DummyParams(BasicParams):
         self.numPage = 1
 
 
-def get_flats(save_json=True, filename="data/scraped_api.json", n_pages_x_request = 2000, mab=False, house=False):
+def get_flats(
+        save_json=True, 
+        filename="data/scraped_api.json", 
+        n_pages_x_request = 2000, 
+        mab=False, 
+        house=False, 
+        yolo_penthouse=False):
 
     with open(".db_creds/idealista_cred.json", "r") as f:
         creds_all = json.load(f)
@@ -137,6 +147,8 @@ def get_flats(save_json=True, filename="data/scraped_api.json", n_pages_x_reques
                 params = MabParams().__dict__
             elif house:
                 params = HouseParams().__dict__
+            if yolo_penthouse:
+                params = YoloPenthouse().__dict__
             else:
                 params = IdealistaParams().__dict__
 
