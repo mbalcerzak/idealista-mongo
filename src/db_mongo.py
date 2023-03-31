@@ -42,11 +42,11 @@ def main(args):
     for flat in flats_with_ids:    
         try:
             collection_flats.insert_one(flat)
-            print(f"New flat {flat['propertyCode']}")
+            # print(f"New flat {flat['propertyCode']}")
             new_flats += 1
             new_flats_ids.append(flat['propertyCode'])
         except errors.DuplicateKeyError as e:
-            print(f"Flat {flat['propertyCode']} exists")
+            # print(f"Flat {flat['propertyCode']} exists")
             old_flats += 1
             continue
 
@@ -65,7 +65,7 @@ def main(args):
         mydoc = collection_prices.find(myquery)
 
         if len(list(mydoc)) > 0:
-            print(f"Price remains the same: {flat_price}")
+            # print(f"Price remains the same: {flat_price}")
             collection_prices_nch.insert_one(flat_price)
         else:
             collection_prices.insert_one(flat_price)
