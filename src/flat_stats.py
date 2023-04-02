@@ -58,7 +58,10 @@ def get_flats_per_location() -> dict:
     
     results = {}
     for cur in name_cursor:
-        results[cur['_id']] = cur['neighborhood_count']
+        if cur['_id']:
+            results[cur['_id']] = cur['neighborhood_count']
+
+    results = dict(sorted(results.items()))
 
     return results
 
@@ -245,6 +248,28 @@ def get_price_m_loc_area_cat() -> dict:
     return results
 
 
+def save_rooms_labels():
+    mydb = get_db()
+    collection_flats = mydb["_flats"] 
+    distr = collection_flats.distinct("rooms")
+
+    districts = [{"value": x, "label": f'{x} rooms'} for x in distr]
+
+    with open("output/district.json", "w") as f:
+        json.dump(districts, f)
+
+
+def save_neighborhood_labels():
+    mydb = get_db()
+    collection_flats = mydb["_flats"] 
+    neighborohood = collection_flats.distinct("neighborhood")
+
+    neighborohoods = [{"value": x, "label": x} for x in neighborohood]
+
+    with open("output/neighborhoods.json", "w") as f:
+        json.dump(neighborohoods, f)
+
+
 if __name__ == "__main__":
 
     combined = {}
@@ -261,3 +286,6 @@ if __name__ == "__main__":
 
     with open("output/flats_mabdata.json", "w") as f:
         json.dump(combined, f)
+
+    # save_rooms_labels()
+    # save_neighborhood_labels()
