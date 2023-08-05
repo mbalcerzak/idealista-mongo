@@ -1,1 +1,362 @@
-[{"value": "Aiora", "label": "Aiora"}, {"value": "Albors", "label": "Albors"}, {"value": "Albuixarres", "label": "Albuixarres"}, {"value": "Alquen\u00e8ncia-Ven\u00e8cia", "label": "Alquen\u00e8ncia-Ven\u00e8cia"}, {"value": "Alquerieta", "label": "Alquerieta"}, {"value": "Arrancapins", "label": "Arrancapins"}, {"value": "Barrio de Favara", "label": "Barrio de Favara"}, {"value": "Benicalap", "label": "Benicalap"}, {"value": "Beniferri", "label": "Beniferri"}, {"value": "Benimaclet", "label": "Benimaclet"}, {"value": "Beter\u00f3", "label": "Beter\u00f3"}, {"value": "Campanar", "label": "Campanar"}, {"value": "Cam\u00ed Fondo", "label": "Cam\u00ed Fondo"}, {"value": "Cam\u00ed Reial", "label": "Cam\u00ed Reial"}, {"value": "Cam\u00ed de Vera", "label": "Cam\u00ed de Vera"}, {"value": "Caputxins", "label": "Caputxins"}, {"value": "Centre", "label": "Centre"}, {"value": "Centro Hist\u00f3rico", "label": "Centro Hist\u00f3rico"}, {"value": "Ciutat Fallera", "label": "Ciutat Fallera"}, {"value": "Ciutat Jard\u00ed", "label": "Ciutat Jard\u00ed"}, {"value": "Ciutat Universit\u00e0ria", "label": "Ciutat Universit\u00e0ria"}, {"value": "Ciutat de les Arts i de les Ciencies", "label": "Ciutat de les Arts i de les Ciencies"}, {"value": "Corea", "label": "Corea"}, {"value": "El Bot\u00e0nic", "label": "El Bot\u00e0nic"}, {"value": "El Cabanyal-El Canyamelar", "label": "El Cabanyal-El Canyamelar"}, {"value": "El Calvari", "label": "El Calvari"}, {"value": "El Carme", "label": "El Carme"}, {"value": "El Grau", "label": "El Grau"}, {"value": "El Mercat", "label": "El Mercat"}, {"value": "El Pilar", "label": "El Pilar"}, {"value": "El Pla del Remei", "label": "El Pla del Remei"}, {"value": "Els Orriols", "label": "Els Orriols"}, {"value": "En Corts", "label": "En Corts"}, {"value": "Exposici\u00f3", "label": "Exposici\u00f3"}, {"value": "Fonteta de Sant Llu\u00ecs", "label": "Fonteta de Sant Llu\u00ecs"}, {"value": "Gran V\u00eda", "label": "Gran V\u00eda"}, {"value": "Jaume Roig", "label": "Jaume Roig"}, {"value": "L'Amistat", "label": "L'Amistat"}, {"value": "L'Hort de Senabre", "label": "L'Hort de Senabre"}, {"value": "L'Illa Perduda", "label": "L'Illa Perduda"}, {"value": "La Carrasca", "label": "La Carrasca"}, {"value": "La Creu Coberta", "label": "La Creu Coberta"}, {"value": "La Creu del Grau", "label": "La Creu del Grau"}, {"value": "La Fontsanta", "label": "La Fontsanta"}, {"value": "La Llum", "label": "La Llum"}, {"value": "La Petxina", "label": "La Petxina"}, {"value": "La Punta", "label": "La Punta"}, {"value": "La Raiosa", "label": "La Raiosa"}, {"value": "La Roqueta", "label": "La Roqueta"}, {"value": "La Seu", "label": "La Seu"}, {"value": "La Vega Baixa", "label": "La Vega Baixa"}, {"value": "La Vila", "label": "La Vila"}, {"value": "La Xerea", "label": "La Xerea"}, {"value": "Las Islas", "label": "Las Islas"}, {"value": "Les Tendetes", "label": "Les Tendetes"}, {"value": "Malilla", "label": "Malilla"}, {"value": "Mare Nostrum - Mercado", "label": "Mare Nostrum - Mercado"}, {"value": "Marxalenes", "label": "Marxalenes"}, {"value": "Mercado", "label": "Mercado"}, {"value": "Mestalla", "label": "Mestalla"}, {"value": "Mont-Olivet", "label": "Mont-Olivet"}, {"value": "Morvedre", "label": "Morvedre"}, {"value": "Na Rovella", "label": "Na Rovella"}, {"value": "Natzaret", "label": "Natzaret"}, {"value": "Nou Benicalap", "label": "Nou Benicalap"}, {"value": "Nou Campanar", "label": "Nou Campanar"}, {"value": "Nou Moles", "label": "Nou Moles"}, {"value": "Padre Jaime - Los Cabos", "label": "Padre Jaime - Los Cabos"}, {"value": "Patraix", "label": "Patraix"}, {"value": "Penya-Roja", "label": "Penya-Roja"}, {"value": "Pere Cresp\u00ed", "label": "Pere Cresp\u00ed"}, {"value": "Pere Morell-Alborx\u00ed", "label": "Pere Morell-Alborx\u00ed"}, {"value": "Playa de la Malvarrosa", "label": "Playa de la Malvarrosa"}, {"value": "Plaza El\u00edptica-Rep\u00fablica Argentina", "label": "Plaza El\u00edptica-Rep\u00fablica Argentina"}, {"value": "Russafa", "label": "Russafa"}, {"value": "Safranar", "label": "Safranar"}, {"value": "Sant Antoni", "label": "Sant Antoni"}, {"value": "Sant Francesc", "label": "Sant Francesc"}, {"value": "Sant Isidre", "label": "Sant Isidre"}, {"value": "Sant Lloren\u00e7", "label": "Sant Lloren\u00e7"}, {"value": "Sant Marcell\u00ed", "label": "Sant Marcell\u00ed"}, {"value": "Sant Pau", "label": "Sant Pau"}, {"value": "Sants Patrons", "label": "Sants Patrons"}, {"value": "Soternes", "label": "Soternes"}, {"value": "Tormos", "label": "Tormos"}, {"value": "Torrefiel", "label": "Torrefiel"}, {"value": "Tres Forques", "label": "Tres Forques"}, {"value": "Trinitat", "label": "Trinitat"}, {"value": "Tulell", "label": "Tulell"}, {"value": "Vara de Quart", "label": "Vara de Quart"}]
+[
+    {
+        "value": "Aiora",
+        "label": "Aiora"
+    },
+    {
+        "value": "Albors",
+        "label": "Albors"
+    },
+    {
+        "value": "Albuixarres",
+        "label": "Albuixarres"
+    },
+    {
+        "value": "Alquen\u00e8ncia-Ven\u00e8cia",
+        "label": "Alquen\u00e8ncia-Ven\u00e8cia"
+    },
+    {
+        "value": "Alquerieta",
+        "label": "Alquerieta"
+    },
+    {
+        "value": "Arrancapins",
+        "label": "Arrancapins"
+    },
+    {
+        "value": "Barrio de Favara",
+        "label": "Barrio de Favara"
+    },
+    {
+        "value": "Benicalap",
+        "label": "Benicalap"
+    },
+    {
+        "value": "Beniferri",
+        "label": "Beniferri"
+    },
+    {
+        "value": "Benimaclet",
+        "label": "Benimaclet"
+    },
+    {
+        "value": "Beter\u00f3",
+        "label": "Beter\u00f3"
+    },
+    {
+        "value": "Campanar",
+        "label": "Campanar"
+    },
+    {
+        "value": "Cam\u00ed Fondo",
+        "label": "Cam\u00ed Fondo"
+    },
+    {
+        "value": "Cam\u00ed Reial",
+        "label": "Cam\u00ed Reial"
+    },
+    {
+        "value": "Cam\u00ed de Vera",
+        "label": "Cam\u00ed de Vera"
+    },
+    {
+        "value": "Caputxins",
+        "label": "Caputxins"
+    },
+    {
+        "value": "Centre",
+        "label": "Centre"
+    },
+    {
+        "value": "Centro Hist\u00f3rico",
+        "label": "Centro Hist\u00f3rico"
+    },
+    {
+        "value": "Ciutat Fallera",
+        "label": "Ciutat Fallera"
+    },
+    {
+        "value": "Ciutat Jard\u00ed",
+        "label": "Ciutat Jard\u00ed"
+    },
+    {
+        "value": "Ciutat Universit\u00e0ria",
+        "label": "Ciutat Universit\u00e0ria"
+    },
+    {
+        "value": "Ciutat de les Arts i de les Ciencies",
+        "label": "Ciutat de les Arts i de les Ciencies"
+    },
+    {
+        "value": "Corea",
+        "label": "Corea"
+    },
+    {
+        "value": "El Bot\u00e0nic",
+        "label": "El Bot\u00e0nic"
+    },
+    {
+        "value": "El Cabanyal-El Canyamelar",
+        "label": "El Cabanyal-El Canyamelar"
+    },
+    {
+        "value": "El Calvari",
+        "label": "El Calvari"
+    },
+    {
+        "value": "El Carme",
+        "label": "El Carme"
+    },
+    {
+        "value": "El Grau",
+        "label": "El Grau"
+    },
+    {
+        "value": "El Mercat",
+        "label": "El Mercat"
+    },
+    {
+        "value": "El Pilar",
+        "label": "El Pilar"
+    },
+    {
+        "value": "El Pla del Remei",
+        "label": "El Pla del Remei"
+    },
+    {
+        "value": "Els Orriols",
+        "label": "Els Orriols"
+    },
+    {
+        "value": "En Corts",
+        "label": "En Corts"
+    },
+    {
+        "value": "Exposici\u00f3",
+        "label": "Exposici\u00f3"
+    },
+    {
+        "value": "Fonteta de Sant Llu\u00ecs",
+        "label": "Fonteta de Sant Llu\u00ecs"
+    },
+    {
+        "value": "Gran V\u00eda",
+        "label": "Gran V\u00eda"
+    },
+    {
+        "value": "Jaume Roig",
+        "label": "Jaume Roig"
+    },
+    {
+        "value": "L'Amistat",
+        "label": "L'Amistat"
+    },
+    {
+        "value": "L'Hort de Senabre",
+        "label": "L'Hort de Senabre"
+    },
+    {
+        "value": "L'Illa Perduda",
+        "label": "L'Illa Perduda"
+    },
+    {
+        "value": "La Carrasca",
+        "label": "La Carrasca"
+    },
+    {
+        "value": "La Creu Coberta",
+        "label": "La Creu Coberta"
+    },
+    {
+        "value": "La Creu del Grau",
+        "label": "La Creu del Grau"
+    },
+    {
+        "value": "La Fontsanta",
+        "label": "La Fontsanta"
+    },
+    {
+        "value": "La Llum",
+        "label": "La Llum"
+    },
+    {
+        "value": "La Petxina",
+        "label": "La Petxina"
+    },
+    {
+        "value": "La Punta",
+        "label": "La Punta"
+    },
+    {
+        "value": "La Raiosa",
+        "label": "La Raiosa"
+    },
+    {
+        "value": "La Roqueta",
+        "label": "La Roqueta"
+    },
+    {
+        "value": "La Seu",
+        "label": "La Seu"
+    },
+    {
+        "value": "La Vega Baixa",
+        "label": "La Vega Baixa"
+    },
+    {
+        "value": "La Vila",
+        "label": "La Vila"
+    },
+    {
+        "value": "La Xerea",
+        "label": "La Xerea"
+    },
+    {
+        "value": "Las Islas",
+        "label": "Las Islas"
+    },
+    {
+        "value": "Les Tendetes",
+        "label": "Les Tendetes"
+    },
+    {
+        "value": "Malilla",
+        "label": "Malilla"
+    },
+    {
+        "value": "Mare Nostrum - Mercado",
+        "label": "Mare Nostrum - Mercado"
+    },
+    {
+        "value": "Marxalenes",
+        "label": "Marxalenes"
+    },
+    {
+        "value": "Mercado",
+        "label": "Mercado"
+    },
+    {
+        "value": "Mestalla",
+        "label": "Mestalla"
+    },
+    {
+        "value": "Mont-Olivet",
+        "label": "Mont-Olivet"
+    },
+    {
+        "value": "Morvedre",
+        "label": "Morvedre"
+    },
+    {
+        "value": "Na Rovella",
+        "label": "Na Rovella"
+    },
+    {
+        "value": "Natzaret",
+        "label": "Natzaret"
+    },
+    {
+        "value": "Nou Benicalap",
+        "label": "Nou Benicalap"
+    },
+    {
+        "value": "Nou Campanar",
+        "label": "Nou Campanar"
+    },
+    {
+        "value": "Nou Moles",
+        "label": "Nou Moles"
+    },
+    {
+        "value": "Padre Jaime - Los Cabos",
+        "label": "Padre Jaime - Los Cabos"
+    },
+    {
+        "value": "Patraix",
+        "label": "Patraix"
+    },
+    {
+        "value": "Penya-Roja",
+        "label": "Penya-Roja"
+    },
+    {
+        "value": "Pere Cresp\u00ed",
+        "label": "Pere Cresp\u00ed"
+    },
+    {
+        "value": "Pere Morell-Alborx\u00ed",
+        "label": "Pere Morell-Alborx\u00ed"
+    },
+    {
+        "value": "Playa de la Malvarrosa",
+        "label": "Playa de la Malvarrosa"
+    },
+    {
+        "value": "Plaza El\u00edptica-Rep\u00fablica Argentina",
+        "label": "Plaza El\u00edptica-Rep\u00fablica Argentina"
+    },
+    {
+        "value": "Russafa",
+        "label": "Russafa"
+    },
+    {
+        "value": "Safranar",
+        "label": "Safranar"
+    },
+    {
+        "value": "Sant Antoni",
+        "label": "Sant Antoni"
+    },
+    {
+        "value": "Sant Francesc",
+        "label": "Sant Francesc"
+    },
+    {
+        "value": "Sant Isidre",
+        "label": "Sant Isidre"
+    },
+    {
+        "value": "Sant Lloren\u00e7",
+        "label": "Sant Lloren\u00e7"
+    },
+    {
+        "value": "Sant Marcell\u00ed",
+        "label": "Sant Marcell\u00ed"
+    },
+    {
+        "value": "Sant Pau",
+        "label": "Sant Pau"
+    },
+    {
+        "value": "Sants Patrons",
+        "label": "Sants Patrons"
+    },
+    {
+        "value": "Soternes",
+        "label": "Soternes"
+    },
+    {
+        "value": "Tormos",
+        "label": "Tormos"
+    },
+    {
+        "value": "Torrefiel",
+        "label": "Torrefiel"
+    },
+    {
+        "value": "Tres Forques",
+        "label": "Tres Forques"
+    },
+    {
+        "value": "Trinitat",
+        "label": "Trinitat"
+    },
+    {
+        "value": "Tulell",
+        "label": "Tulell"
+    },
+    {
+        "value": "Vara de Quart",
+        "label": "Vara de Quart"
+    }
+]

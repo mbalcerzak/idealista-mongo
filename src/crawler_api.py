@@ -59,13 +59,13 @@ class BasicParams:
         self.locationId = "0-EU-ES-46"
         self.operation = "sale"
         self.propertyType = "homes"
-        self.maxItems = 50
+        # self.maxItems = 200
 
 class IdealistaParams(BasicParams):
     def __init__(self):
         super().__init__()
         self.minPrice = 1
-        self.maxPrice = 9999999
+        self.maxPrice = 9_999_999
         self.minSize = 50
         self.order = "publicationDate"
         self.sort = "desc"
@@ -75,7 +75,7 @@ class HouseParams(BasicParams):
     def __init__(self):
         super().__init__()
         self.minPrice = 1
-        self.maxPrice = 300000
+        self.maxPrice = 300_000
         self.minSize = 90
         self.order = "publicationDate"
         self.sort = "desc"
@@ -155,7 +155,7 @@ def get_flats(
             print(f"{params=}")
             
             for n_page in range(1, n_pages_x_request):
-                params["n_page"] = n_page
+                params["numPage"] = n_page
                 print(f"\tPage:{n_page}")
 
                 req_result = idealista.make_request("POST", params, country="es")

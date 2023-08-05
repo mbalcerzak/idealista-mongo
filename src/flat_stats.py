@@ -234,13 +234,15 @@ def get_price_m_loc_area_cat() -> dict:
         neigh = r["neighborhood"]
         month = r["month"]
         rooms = r["rooms"]
+        if rooms > 7:
+            rooms = "7+"
         price = r["price_mean"]
         count = r["price_count"]
 
         results.append({
             "location":neigh,
             "month_num":month,
-            "area_category":rooms,
+            "area_category":str(rooms),
             "avg_price_per_m":price, 
             "num_flats":count,
             "month":month})

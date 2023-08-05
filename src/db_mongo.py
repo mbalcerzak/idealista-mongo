@@ -27,6 +27,10 @@ def main(args):
     n_pages_x_request = args.pages 
     flats = get_flats(mab=mab, n_pages_x_request=n_pages_x_request, house=house, yolo_penthouse=yolo_penthouse)
 
+    if not flats:
+        print("No flats scraped today")
+        return None
+
     print(f"\nScraped flats: {len(flats)}\n")
 
     flats_with_ids = [dict(flat, **{'_id':int(flat["propertyCode"])}) for flat in flats]

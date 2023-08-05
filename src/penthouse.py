@@ -143,7 +143,6 @@ def json_into_df():
     df2.to_parquet("output/penthouses_prc.parquet")
 
 
-
 def main():
     """
     1. Find most recent penthouses
@@ -151,6 +150,7 @@ def main():
     3. Calculate relative diff between the m2 price in the area
     4. Return a list of most extreme cases
     """
+    today = date.today()
     cutoff_date = get_cutoff_date()
 
     penthouses_data, penthouse_ids = find_penthouses()
@@ -162,7 +162,7 @@ def main():
         if penthouse_data:
             cheap_penthouses[penthouse_id] = penthouse_data
 
-    print(f"How many penthouses: {len(cheap_penthouses)}")
+    print(f"{today} How many penthouses: {len(cheap_penthouses)}")
 
     save_json(cheap_penthouses, "cheap_penthouses")
 
@@ -173,10 +173,3 @@ def main():
 if __name__ == "__main__":
     main()
     json_into_df()
-
-    
-
-
-
-
-

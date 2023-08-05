@@ -10,3 +10,5 @@ secrets.toml
 
 log_inside*
 log
+
+*.parquet
