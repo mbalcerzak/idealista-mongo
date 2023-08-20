@@ -30,6 +30,13 @@ from utils import get_price_records_data, get_avg_prices_district
 from db_mongo import get_db
 
 
+def get_bins_labels():
+    bins=[-1, 40, 60, 80, 100, 120, 140, 160, 180, 200, 999999]
+    labels=["max 40m", "40-60m", "60-80m", "80-100m", "100-120m","120-140m","140-160m", "160-180m", "180-200m", "200m+"]
+
+    return bins, labels
+
+
 def get_flat_count() -> int:
     """Returns the number of flats in the database"""
     db = get_db()
@@ -84,11 +91,14 @@ def get_flats_per_area_cat() -> dict:
 
     df = df[["propertyCode", "size"]]
 
-    labels_cat = ["max 40m", "40-60m", "60-80m", "80-100m", "100-120m","120-140m","140-160m", "160m+"]
+    bins, labels_cat = get_bins_labels()
+
+    print(bins)
+    print(labels_cat)
 
     df["area_cat"] = pd.cut(
                         df["size"], 
-                        bins=[-1, 40, 60, 80, 100, 120, 140, 160, 999999],
+                        bins=bins,
                         labels=labels_cat)
     
     c = dict(Counter(df["area_cat"]))
@@ -284,11 +294,12 @@ def get_price_m_loc_area_cat() -> dict:
 
     flats = df_flats[['propertyCode', 'neighborhood', "size"]]
 
+    bins, labels_cat = get_bins_labels()
+
     flats["area_cat"] = pd.cut(
                     flats["size"], 
-                    bins=[-1, 40, 60, 80, 100, 120, 140, 160, 999999],
-                    labels=["max 40m", "40-60m", "60-80m", "80-100m", "100-120m","120-140m","140-160m", "160m+"])
-
+                    bins=bins,
+                    labels=labels_cat)
 
     # ['_id', 'propertyCode', 'price', 'date']
     prices = collection_prices.find()
