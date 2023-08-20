@@ -93,9 +93,6 @@ def get_flats_per_area_cat() -> dict:
 
     bins, labels_cat = get_bins_labels()
 
-    print(bins)
-    print(labels_cat)
-
     df["area_cat"] = pd.cut(
                         df["size"], 
                         bins=bins,
@@ -159,6 +156,14 @@ def get_scraped_per_day() -> dict:
 
 def get_scraped_per_day_m_avg() -> dict:
     """Get moving average of number of flats scraped per day"""
+
+    scraped_per_day = get_scraped_per_day()
+    df = pd.DataFrame(list(zip(scraped_per_day.keys(), scraped_per_day.values())), columns =['date', 'scraped'])
+    df["scraped_avg"] = df["scraped"].ewm(span=10).mean().apply(lambda x: round(x))
+
+    results = {k:v for k,v in zip(df["date"], df["scraped_avg"])}
+
+    return results
 
 
 def get_changes_per_day() -> dict:
@@ -367,6 +372,15 @@ def save_neighborhood_labels():
         json.dump(neighborohoods, f)
 
 
+def save_area_cat_labels():
+    _, labels_cat = get_bins_labels()
+
+    labels_all = [{"value":i, "label":i} for i in labels_cat]
+
+    with open("output/district.json", "w") as f:
+        json.dump(labels_all, f)
+
+
 if __name__ == "__main__":
     combined = {}
     
@@ -376,6 +390,7 @@ if __name__ == "__main__":
     combined["flats_per_area_cat"] = get_flats_per_area_cat()
     combined["flats_per_num_rooms"] = get_flats_per_num_rooms()
     combined["scraped_per_day"] = get_scraped_per_day()
+    combined["scraped_per_day_m_avg"] = get_scraped_per_day_m_avg()
     combined["changes_per_day"] = get_changes_per_day()
     combined["changes_per_flat"] = get_changes_per_flat()
     combined["changes_count"] = get_changes_count()
@@ -386,12 +401,6 @@ if __name__ == "__main__":
     with open("output/flats_mabdata.json", "w") as f:
         json.dump(combined, f)
 
-
-
-    # with open("output/district.json", "w") as f:
-    #     json.dump(combined, f)
-
-    # save_rooms_labels()
-    # save_neighborhood_labels()
+    save_area_cat_labels()
 
     # print(combined)
