@@ -89,7 +89,7 @@ def get_flats_per_area_cat() -> dict:
                         bins=[-1, 40, 60, 80, 100, 120, 140, 160, 999999],
                         labels=["max 40m", "40-60m", "60-80", "80-100m", "100-120m","120-140m","140-160m", "160m+"])
     
-    print(df.head())
+    return Counter(df["area_cat"])
 
 
 def get_flats_per_num_rooms() -> dict:
