@@ -23,11 +23,20 @@ import json
 import pandas as pd
 from datetime import date
 from dateutil.relativedelta import relativedelta
-from collections import defaultdict
+from collections import defaultdict, Counter
 
 from flat_info import save_json
 from utils import get_price_records_data, get_avg_prices_district
 from db_mongo import get_db
+
+
+def get_flat_count() -> int:
+    """Returns the number of flats in the database"""
+    db = get_db()
+    collection_flats = db["_flats"]
+
+    num_flats = collection_flats.estimated_document_count()
+    return num_flats
 
 
 def get_dates() -> dict:
@@ -86,7 +95,7 @@ def get_flats_per_area_cat() -> dict:
 
     results_simple = defaultdict(int)
     for key, val in results.items():
-        if key > 7:
+        if key >= 7:
             results_simple["7+"] += val
         else:
             results_simple[key] = val
@@ -133,6 +142,38 @@ def get_changes_per_day() -> dict:
     results = {}
     for cur in name_cursor:
         results[cur['_id']] = cur['changes']
+
+    return results
+
+
+def get_price_change_info() -> dict:
+    db = get_db()
+    collection_flats = db["_prices"]
+
+    name_cursor = collection_flats.aggregate([
+        {'$group': {
+             '_id':'$propertyCode', 
+             'changes': {'$sum': 1}
+             }},
+        {'$match': {'changes': {'$gt': 1}}},
+        ])
+    
+    results = {}
+    for cur in name_cursor:
+        results[cur['_id']] = cur['changes'] - 1
+
+    return results
+
+
+def get_changes_per_flat() -> dict:
+    """Get number of flats price changes per flat"""
+    return get_price_change_info()
+
+
+def get_changes_count() -> dict:
+    """Counts flats per number of price changes"""
+    price_changes = get_price_change_info()
+    results = Counter(price_changes.values())
 
     return results
 
@@ -241,7 +282,7 @@ def get_price_m_loc_area_cat() -> dict:
         neigh = r["neighborhood"]
         month = r["month"]
         rooms = r["rooms"]
-        if rooms > 7:
+        if rooms >= 7:
             rooms = "7+"
         price = r["price_mean"]
         count = r["price_count"]
@@ -285,16 +326,21 @@ if __name__ == "__main__":
     
     combined["dates"] = get_dates()
 
-    combined["flats_per_location"] = get_flats_per_location()
-    combined["flats_per_area_cat"] = get_flats_per_area_cat()
-    combined["scraped_per_day"] = get_scraped_per_day()
-    combined["changes_per_day"] = get_changes_per_day()
-    combined["price_m_location"] = get_price_m_location()
-    combined["posted_per_day"] = get_scraped_per_day()
-    combined["price_m_loc_area_cat"] = get_price_m_loc_area_cat()
+    combined["flat_count"] = get_flat_count()
+    # combined["flats_per_location"] = get_flats_per_location()
+    # combined["flats_per_area_cat"] = get_flats_per_area_cat()
+    # combined["scraped_per_day"] = get_scraped_per_day()
+    # combined["changes_per_day"] = get_changes_per_day()
+    # combined["changes_per_flat"] = get_changes_per_flat()
+    # combined["changes_count"] = get_changes_count()
+    # combined["price_m_location"] = get_price_m_location()
+    # combined["posted_per_day"] = get_scraped_per_day()
+    # combined["price_m_loc_area_cat"] = get_price_m_loc_area_cat()
 
-    with open("output/flats_mabdata.json", "w") as f:
-        json.dump(combined, f)
+    # with open("output/flats_mabdata.json", "w") as f:
+    #     json.dump(combined, f)
 
     # save_rooms_labels()
     # save_neighborhood_labels()
+
+    print(combined)
