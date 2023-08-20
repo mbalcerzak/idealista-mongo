@@ -303,6 +303,7 @@ def get_price_m_loc_area_cat() -> dict:
     grouped = grouped.reset_index()
     grouped["area_type"] = 'neighborhood'
     grouped["date"] = grouped["month"].apply(lambda x: f"{x}-15")
+    grouped["price_mean"] = grouped["price_mean"].fillna(0)
 
     results = []
     for _, r in grouped.iterrows():
