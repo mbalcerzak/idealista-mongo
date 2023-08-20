@@ -66,7 +66,8 @@ class IdealistaParams(BasicParams):
         super().__init__()
         self.minPrice = 1
         self.maxPrice = 9_999_999
-        self.minSize = 50
+        # self.minSize = 50
+        self.maxSize = 350
         self.order = "publicationDate"
         self.sort = "desc"
         self.locale = "es"

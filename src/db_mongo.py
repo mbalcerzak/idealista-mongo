@@ -21,6 +21,7 @@ def get_db(permission:str="read"):
 
 
 def main(args):
+    print(args.__dict__)
     mab = args.mab
     house = args.house
     yolo_penthouse = args.yolo_penthouse

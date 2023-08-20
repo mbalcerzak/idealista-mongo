@@ -40,7 +40,7 @@ def get_price_records_data(max_pricesflats:list):
     """Takes a list of flat IDs and returns data for them"""
     mydb = get_db()
     collection_prices = mydb["_prices"]
-    results = {}
+    results = []
 
     for procertyCode in max_pricesflats:
         myquery = {"propertyCode": procertyCode}
@@ -51,7 +51,7 @@ def get_price_records_data(max_pricesflats:list):
             doc_data[d["date"]] = d["price"]
 
         doc_data_sorted = dict(sorted(doc_data.items()))
-        results[procertyCode] = doc_data_sorted
+        results.append({"procertyCode": procertyCode, "prices": doc_data_sorted})
 
     return results
 
@@ -161,13 +161,13 @@ def get_avg_prices_district(penthouse=False):
 
 
 def get_full_flat_data(data):
-    ids = data.keys()
-    flat_data = {}
+    ids = [x["procertyCode"] for x in data]
+    flat_data = []
 
     for id in ids:
         flat_info = get_flat_info(id)
         if flat_info["municipality"] == "València":
-            flat_data[id] = flat_info
+            flat_data.append(flat_info)
 
     return flat_data 
 
