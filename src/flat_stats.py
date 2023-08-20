@@ -84,7 +84,14 @@ def get_flats_per_area_cat() -> dict:
 
     results = dict(sorted(results.items()))
 
-    return results
+    results_simple = defaultdict(int)
+    for key, val in results.items():
+        if key > 7:
+            results_simple["7+"] += val
+        else:
+            results_simple[key] = val
+
+    return results_simple
 
 
 def get_scraped_per_day() -> dict:
