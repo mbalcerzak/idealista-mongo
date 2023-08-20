@@ -87,7 +87,7 @@ def get_flats_per_area_cat() -> dict:
     df["area_cat"] = pd.cut(
                         df["size"], 
                         bins=[-1, 40, 60, 80, 100, 120, 140, 160, 999999],
-                        labels=["max 40m", "40-60m", "60-80", "80-100m", "100-120m","120-140m","140-160m", "160m+"])
+                        labels=["max 40m", "40-60m", "60-80m", "80-100m", "100-120m","120-140m","140-160m", "160m+"])
     
     return Counter(df["area_cat"])
 
@@ -279,7 +279,7 @@ def get_price_m_loc_area_cat() -> dict:
     flats["area_cat"] = pd.cut(
                     flats["size"], 
                     bins=[-1, 40, 60, 80, 100, 120, 140, 160, 999999],
-                    labels=["max 40m", "40-60m", "60-80", "80-100m", "100-120m","120-140m","140-160m", "160m+"])
+                    labels=["max 40m", "40-60m", "60-80m", "80-100m", "100-120m","120-140m","140-160m", "160m+"])
 
 
     # ['_id', 'propertyCode', 'price', 'date']
