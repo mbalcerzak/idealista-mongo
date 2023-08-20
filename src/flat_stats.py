@@ -84,12 +84,20 @@ def get_flats_per_area_cat() -> dict:
 
     df = df[["propertyCode", "size"]]
 
+    labels_cat = ["max 40m", "40-60m", "60-80m", "80-100m", "100-120m","120-140m","140-160m", "160m+"]
+
     df["area_cat"] = pd.cut(
                         df["size"], 
                         bins=[-1, 40, 60, 80, 100, 120, 140, 160, 999999],
-                        labels=["max 40m", "40-60m", "60-80m", "80-100m", "100-120m","120-140m","140-160m", "160m+"])
+                        labels=labels_cat)
     
-    return Counter(df["area_cat"])
+    c = dict(Counter(df["area_cat"]))
+    result = {}
+
+    for lab in labels_cat:
+        result[lab] = c[lab]
+
+    return result
 
 
 def get_flats_per_num_rooms() -> dict:
