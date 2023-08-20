@@ -307,19 +307,21 @@ def get_price_m_loc_area_cat() -> dict:
 
     results = []
     for _, r in grouped.iterrows():
-        neigh = r["neighborhood"]
-        month = r["month"]
-        area_cat = r["area_cat"]
-        price = r["price_mean"]
-        count = r["price_count"]
 
-        results.append({
-            "location":neigh,
-            "month_num":month,
-            "area_category":area_cat,
-            "avg_price_per_m":price, 
-            "num_flats":count,
-            "month":month})
+        if r["price_count"] > 0:
+            neigh = r["neighborhood"]
+            month = r["month"]
+            area_cat = r["area_cat"]
+            price = round(r["price_mean"])
+            count = r["price_count"]
+
+            results.append({
+                "location":neigh,
+                "month_num":month,
+                "area_category":area_cat,
+                "avg_price_per_m":price, 
+                "num_flats":count,
+                "month":month})
 
     return results
 
@@ -364,6 +366,11 @@ if __name__ == "__main__":
 
     with open("output/flats_mabdata.json", "w") as f:
         json.dump(combined, f)
+
+
+
+    # with open("output/district.json", "w") as f:
+    #     json.dump(combined, f)
 
     # save_rooms_labels()
     # save_neighborhood_labels()
