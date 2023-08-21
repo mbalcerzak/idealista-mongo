@@ -9,7 +9,7 @@ def save_json(file, filename):
 
 
 if __name__ == "__main__":  
-    max_prices_flats = get_flats_multiprice_max() 
+    max_prices_flats = get_flats_multiprice_max(4) 
     price_records_data = get_price_records_data(max_prices_flats)
     save_json(price_records_data, "most_price_changes")
 
