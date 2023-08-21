@@ -46,12 +46,13 @@ def get_price_records_data(max_pricesflats:list):
         myquery = {"propertyCode": propertyCode}
 
         mydoc = collection_prices.find(myquery)
-        doc_data = {}
+        dates = []
+        prices = []
         for d in mydoc:
-            doc_data[d["date"]] = d["price"]
+            dates.append(d["date"])
+            prices.append(d["price"])
 
-        doc_data_sorted = dict(sorted(doc_data.items()))
-        results.append({"propertyCode": propertyCode, "prices": doc_data_sorted})
+        results.append({"propertyCode": propertyCode, "prices": prices, "dates": dates})
 
     return results
 
