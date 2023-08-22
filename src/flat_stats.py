@@ -151,7 +151,9 @@ def get_scraped_per_day() -> dict:
     for cur in name_cursor:
         results[cur['_id']] = cur['scraped']
 
-    return results
+    res_sorted = dict(sorted(results.items()))
+
+    return res_sorted
 
 
 def get_scraped_per_day_m_avg() -> dict:
@@ -159,6 +161,7 @@ def get_scraped_per_day_m_avg() -> dict:
 
     scraped_per_day = get_scraped_per_day()
     df = pd.DataFrame(list(zip(scraped_per_day.keys(), scraped_per_day.values())), columns =['date', 'scraped'])
+    df = df.sort_values("date")
     df["scraped_avg"] = df["scraped"].ewm(span=10).mean().apply(lambda x: round(x))
 
     results = {k:v for k,v in zip(df["date"], df["scraped_avg"])}
@@ -403,4 +406,4 @@ if __name__ == "__main__":
 
     save_area_cat_labels()
 
-    # print(combined)
+    print(combined)
