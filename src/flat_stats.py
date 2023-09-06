@@ -276,7 +276,7 @@ def get_price_m_location() -> dict:
     for _, r in grouped.iterrows():
         neigh = r["neighborhood"]
         month = r["month"]
-        price = r["price_mean"]
+        price = round(r["price_mean"])
         count = r["price_count"]
 
         results.append({
