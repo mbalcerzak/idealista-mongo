@@ -16,8 +16,7 @@ def strip_dict_short(d:dict) -> dict:
 
 def get_flats_multiprice_max(min_count=3) -> list:
     """
-    Returns data for flats with the highest number of price changes
-    with a set minimum
+    Returns data for flats with the minimum number of price changes
     """
     mydb = get_db()
     collection_prices = mydb["_prices"]
@@ -34,6 +33,31 @@ def get_flats_multiprice_max(min_count=3) -> list:
             max_pricesflats.append(document["_id"])
 
     return max_pricesflats
+
+
+def get_flats_multiprice_latest(latest_date, min_changes=3) -> list:
+    """
+    Returns flats' IDs of flats with most recent price changes
+    """
+    mydb = get_db()
+    collection_prices = mydb["_prices"]
+    max_pricesflat_ids = get_flats_multiprice_max(min_changes)
+
+    latest_change_ids = []
+
+    name_cursor = collection_prices.aggregate([
+        {'$group': {
+                '_id':'$propertyCode', 
+                "latest_date": {"$last": '$date'}
+                }}
+        ])
+
+    for document in name_cursor:
+        if document["_id"] in max_pricesflat_ids and document["latest_date"] > latest_date:
+            latest_change_ids.append(document["_id"])
+
+    return latest_change_ids
+
     
 
 def get_price_records_data(max_pricesflats:list):
@@ -98,7 +122,7 @@ def get_flat_info(propertyCode:str):
     myquery = {"propertyCode": propertyCode}
     mydoc = collection_flats.find_one(myquery)
 
-    return mydoc
+    return mydoc if mydoc else {"_id": propertyCode}
 
 
 def group_prices(df:pd.DataFrame, colname:str):
@@ -241,4 +265,9 @@ if __name__ == "__main__":
     # price_changes = get_flats_id()
     # get_price_records_data(price_changes)
     # get_avg_prices_district()
-    get_highset_price_diff()
+    # get_highset_price_diff()
+    latest_change_ids = get_flats_multiprice_latest('2023-09-01')
+    prices = get_price_records_data(latest_change_ids)
+
+    with open("output/latest_price_changes.json", "w") as f:
+        json.dump(prices, f)

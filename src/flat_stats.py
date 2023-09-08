@@ -26,7 +26,9 @@ from dateutil.relativedelta import relativedelta
 from collections import defaultdict, Counter
 
 from flat_info import save_json
-from utils import get_price_records_data, get_avg_prices_district
+from utils import get_flats_multiprice_max, get_price_records_data, \
+                    get_full_flat_data, get_avg_prices_district, get_price_diff
+import json
 from db_mongo import get_db
 
 
@@ -384,6 +386,11 @@ def save_area_cat_labels():
         json.dump(labels_all, f)
 
 
+def save_json(file, filename):
+    with open(f"output/{filename}.json", "w") as f:
+        json.dump(file, f)
+
+
 if __name__ == "__main__":
     combined = {}
     
@@ -406,4 +413,9 @@ if __name__ == "__main__":
 
     save_area_cat_labels()
 
-    print(combined)
+    max_prices_flats = get_flats_multiprice_max(4) 
+    price_records_data = get_price_records_data(max_prices_flats)
+    save_json(price_records_data, "most_price_changes")
+
+    flat_data = get_full_flat_data(price_records_data)
+    save_json(flat_data, "flat_data")

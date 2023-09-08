@@ -1,28 +1,47 @@
-from utils import get_flats_multiprice_max, get_price_records_data, \
-                    get_full_flat_data, get_avg_prices_district, get_price_diff
+from db_mongo import get_db
+from utils import get_flat_info
 import json
 
 
-def save_json(file, filename):
-    with open(f"output/{filename}.json", "w") as f:
-        json.dump(file, f)
+def get_price_records_for_flat(propertyCode:str):
+    """Takes a list of flat IDs and returns data for them"""
+    mydb = get_db()
+    collection_prices = mydb["_prices"]
+
+    myquery = {"propertyCode": propertyCode}
+
+    if collection_prices.count_documents(myquery, limit = 1):
+        mydoc = collection_prices.find(myquery)
+
+        dates = []
+        prices = []
+        for d in mydoc:
+            dates.append(d["date"])
+            prices.append(d["price"])
+
+            results = {"propertyCode": propertyCode, "prices": prices, "dates": dates}
+
+        return results
+    
+    else:
+        return("No price data available")
+
 
 
 if __name__ == "__main__":  
-    max_prices_flats = get_flats_multiprice_max(4) 
-    price_records_data = get_price_records_data(max_prices_flats)
-    save_json(price_records_data, "most_price_changes")
 
-    flat_data = get_full_flat_data(price_records_data)
-    save_json(flat_data, "flat_data")
+    flat_id_list = ["92531310", "102228091", "102257387", "100797549"]
 
-    # max_price_diffs = get_price_diff(max_prices_flats)
-    # save_json(max_price_diffs, "max_price_diffs") 
+    results = []
 
-    # json_district, json_neighborhood = get_avg_prices_district()
-    # save_json(json_district, "avg_district_prices")
-    # save_json(json_neighborhood, "avg_neighborhood_prices")
-        
-    # json_district, json_neighborhood = get_avg_prices_district(penthouse=True)
-    # save_json(json_district, "avg_district_prices_pent")
-    # save_json(json_neighborhood, "avg_neighborhood_prices_pent")
+    for flat_id in flat_id_list:
+        print(flat_id)
+        info = get_flat_info(flat_id)
+        prices = get_price_records_for_flat(flat_id)
+
+        print(info)
+
+        results.append({"info": info, "prices": prices})
+
+    with open("output/selected_flats.json", "w") as f:
+        json.dump(results, f)
