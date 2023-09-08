@@ -25,9 +25,9 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 from collections import defaultdict, Counter
 
-from flat_info import save_json
 from utils import get_flats_multiprice_max, get_price_records_data, \
-                    get_full_flat_data, get_avg_prices_district, get_price_diff
+                    get_full_flat_data, get_avg_prices_district, get_price_diff, \
+                    get_flats_multiprice_latest
 import json
 from db_mongo import get_db
 
@@ -408,8 +408,7 @@ if __name__ == "__main__":
     combined["posted_per_day"] = get_scraped_per_day()
     combined["price_m_loc_area_cat"] = get_price_m_loc_area_cat()
 
-    with open("output/flats_mabdata.json", "w") as f:
-        json.dump(combined, f)
+    save_json(combined, "flats_mabdata")
 
     save_area_cat_labels()
 
@@ -419,3 +418,7 @@ if __name__ == "__main__":
 
     flat_data = get_full_flat_data(price_records_data)
     save_json(flat_data, "flat_data")
+
+    latest_change_ids = get_flats_multiprice_latest(2)
+    prices = get_price_records_data(latest_change_ids)
+    save_json(prices, "latest_price_changes")
