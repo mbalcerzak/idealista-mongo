@@ -85,14 +85,24 @@ def get_price_records_data(max_pricesflats:list):
             dates.append(d["date"])
             prices.append(d["price"])
 
+        subtext = info["suggestedTexts"]
+        price_fmt = f"{round(int(prices[-1])/1000)}k EUR"
+
+        title = f'{subtext["title"]} {subtext["subtitle"]} ({price_fmt}, {int(info["size"])} m2)'
+
         results.append({
                     "propertyCode": propertyCode, 
                     "prices": prices, 
                     "dates": dates,
-                    "info": info
+                    "info": info,
+                    "title": title
                     })
-
+        
     return results
+
+
+def get_titles(results):
+    return([{"value":r["propertyCode"], "label": r["title"]} for r in results])
 
 
 def save_prices():

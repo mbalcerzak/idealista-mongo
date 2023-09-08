@@ -25,8 +25,9 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 from collections import defaultdict, Counter
 
+
 from utils import get_flats_multiprice_max, get_price_records_data, \
-                    get_full_flat_data, get_avg_prices_district, get_price_diff, \
+                    get_full_flat_data, get_titles, \
                     get_flats_multiprice_latest
 import json
 from db_mongo import get_db
@@ -422,3 +423,6 @@ if __name__ == "__main__":
     latest_change_ids = get_flats_multiprice_latest(2)
     prices = get_price_records_data(latest_change_ids)
     save_json(prices, "latest_price_changes")
+
+    titles = get_titles(prices)
+    save_json(titles, "ad_titles")
