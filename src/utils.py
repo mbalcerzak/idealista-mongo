@@ -4,6 +4,7 @@ from db_mongo import get_db
 from bson.json_util import dumps
 import pandas as pd
 from collections import defaultdict
+from datetime import datetime, timedelta
 
 
 def strip_dict(d:dict) -> dict:
@@ -35,7 +36,7 @@ def get_flats_multiprice_max(min_count=3) -> list:
     return max_pricesflats
 
 
-def get_flats_multiprice_latest(latest_date, min_changes=3) -> list:
+def get_flats_multiprice_latest(weeks_ago=2, min_changes=3) -> list:
     """
     Returns flats' IDs of flats with most recent price changes
     """
@@ -51,6 +52,14 @@ def get_flats_multiprice_latest(latest_date, min_changes=3) -> list:
                 "latest_date": {"$last": '$date'}
                 }}
         ])
+
+    # latest_price_change = max([doc["latest_date"] for doc in name_cursor])
+    latest_price_change = collection_prices.find_one(sort=[("date", -1)])["date"]
+    print(f"{latest_price_change=}")
+
+    latest_date = datetime.strptime(latest_price_change, '%Y-%m-%d') - timedelta(weeks=weeks_ago)
+    latest_date = latest_date.strftime('%Y-%m-%d')
+    print(f"{latest_date=}")
 
     for document in name_cursor:
         if document["_id"] in max_pricesflat_ids and document["latest_date"] > latest_date:
@@ -266,7 +275,8 @@ if __name__ == "__main__":
     # get_price_records_data(price_changes)
     # get_avg_prices_district()
     # get_highset_price_diff()
-    latest_change_ids = get_flats_multiprice_latest('2023-09-01')
+    latest_change_ids = get_flats_multiprice_latest(4)
+    print(latest_change_ids)
     prices = get_price_records_data(latest_change_ids)
 
     with open("output/latest_price_changes.json", "w") as f:
