@@ -90,19 +90,22 @@ def get_price_records_data(max_pricesflats:list):
 
         title = f'{subtext["title"]} {subtext["subtitle"]} ({price_fmt}, {int(info["size"])} m2)'
 
-        results.append({
-                    "propertyCode": propertyCode, 
-                    "prices": prices, 
-                    "dates": dates,
-                    "info": info,
-                    "title": title
-                    })
+        small_dict = {"propertyCode": propertyCode, 
+        "prices": prices, 
+        "dates": dates,
+        "title": title
+        }
+
+        new_dict = {**small_dict, **info}
+        
+        results.append(new_dict)
         
     return results
 
 
 def get_titles(results):
-    return([{"value":r["propertyCode"], "label": r["title"]} for r in results])
+    titles = [{"value":r["propertyCode"], "label": r["title"]} for r in results]
+    return sorted(titles, key=lambda d: d['label']) 
 
 
 def save_prices():
