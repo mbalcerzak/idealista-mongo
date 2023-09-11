@@ -76,6 +76,32 @@ def get_price_records_data(max_pricesflats:list):
 
     for propertyCode in max_pricesflats:
         myquery = {"propertyCode": propertyCode}
+
+        mydoc = collection_prices.find(myquery)
+        dates = []
+        prices = []
+        for d in mydoc:
+            dates.append(d["date"])
+            prices.append(d["price"])
+
+        price_dict = {"propertyCode": propertyCode, 
+        "prices": prices, 
+        "dates": dates,
+        }
+
+        results.append(price_dict)
+        
+    return results
+
+
+def get_info(max_pricesflats):
+    mydb = get_db()
+    collection_prices = mydb["_prices"]
+    results = []
+    titles = []
+
+    for propertyCode in max_pricesflats:
+        myquery = {"propertyCode": propertyCode}
         info = get_flat_info(propertyCode)
 
         mydoc = collection_prices.find(myquery)
@@ -89,23 +115,15 @@ def get_price_records_data(max_pricesflats:list):
         price_fmt = f"{round(int(prices[-1])/1000)}k EUR"
 
         title = f'{subtext["title"]} {subtext["subtitle"]} ({price_fmt}, {int(info["size"])} m2)'
+        titles.append({"value": propertyCode, "label": title})
 
-        small_dict = {"propertyCode": propertyCode, 
-        "prices": prices, 
-        "dates": dates,
-        "title": title
-        }
-
-        new_dict = {**small_dict, **info}
+        new_dict = {**info}
         
         results.append(new_dict)
         
-    return results
+    sorted_titles = sorted(titles, key=lambda d: d['label']) 
 
-
-def get_titles(results):
-    titles = [{"value":r["propertyCode"], "label": r["title"]} for r in results]
-    return sorted(titles, key=lambda d: d['label']) 
+    return results, sorted_titles
 
 
 def save_prices():

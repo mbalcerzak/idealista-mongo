@@ -27,7 +27,7 @@ from collections import defaultdict, Counter
 
 
 from utils import get_flats_multiprice_max, get_price_records_data, \
-                    get_full_flat_data, get_titles, \
+                    get_full_flat_data, get_info, \
                     get_flats_multiprice_latest
 import json
 from db_mongo import get_db
@@ -395,27 +395,27 @@ def save_json(file, filename):
 if __name__ == "__main__":
     combined = {}
     
-    # combined["dates"] = get_dates()
-    # combined["flat_count"] = get_flat_count()
-    # combined["flats_per_location"] = get_flats_per_location()
-    # combined["flats_per_area_cat"] = get_flats_per_area_cat()
-    # combined["flats_per_num_rooms"] = get_flats_per_num_rooms()
-    # combined["scraped_per_day"] = get_scraped_per_day()
-    # combined["scraped_per_day_m_avg"] = get_scraped_per_day_m_avg()
-    # combined["changes_per_day"] = get_changes_per_day()
-    # combined["changes_per_flat"] = get_changes_per_flat()
-    # combined["changes_count"] = get_changes_count()
-    # combined["price_m_location"] = get_price_m_location()
-    # combined["posted_per_day"] = get_scraped_per_day()
-    # combined["price_m_loc_area_cat"] = get_price_m_loc_area_cat()
+    combined["dates"] = get_dates()
+    combined["flat_count"] = get_flat_count()
+    combined["flats_per_location"] = get_flats_per_location()
+    combined["flats_per_area_cat"] = get_flats_per_area_cat()
+    combined["flats_per_num_rooms"] = get_flats_per_num_rooms()
+    combined["scraped_per_day"] = get_scraped_per_day()
+    combined["scraped_per_day_m_avg"] = get_scraped_per_day_m_avg()
+    combined["changes_per_day"] = get_changes_per_day()
+    combined["changes_per_flat"] = get_changes_per_flat()
+    combined["changes_count"] = get_changes_count()
+    combined["price_m_location"] = get_price_m_location()
+    combined["posted_per_day"] = get_scraped_per_day()
+    combined["price_m_loc_area_cat"] = get_price_m_loc_area_cat()
 
-    # save_json(combined, "flats_mabdata")
+    save_json(combined, "flats_mabdata")
 
-    # save_area_cat_labels()
+    save_area_cat_labels()
 
-    # max_prices_flats = get_flats_multiprice_max(4) 
-    # price_records_data = get_price_records_data(max_prices_flats)
-    # save_json(price_records_data, "most_price_changes")
+    max_prices_flats = get_flats_multiprice_max(4) 
+    price_records_data = get_price_records_data(max_prices_flats)
+    save_json(price_records_data, "most_price_changes")
 
     # flat_data = get_full_flat_data(price_records_data)
     # save_json(flat_data, "flat_data")
@@ -424,5 +424,6 @@ if __name__ == "__main__":
     prices = get_price_records_data(latest_change_ids)
     save_json(prices, "latest_price_changes")
 
-    titles = get_titles(prices)
-    save_json(titles, "ad_titles")
+    flat_info, sorted_titles = get_info(latest_change_ids)
+    save_json(sorted_titles, "ad_titles")
+    save_json(flat_info, "flat_info")
