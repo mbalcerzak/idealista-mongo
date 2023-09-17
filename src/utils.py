@@ -3,7 +3,7 @@ import pymongo
 from db_mongo import get_db
 from bson.json_util import dumps
 import pandas as pd
-from collections import defaultdict
+from collections import defaultdict, Counter
 from datetime import datetime, timedelta
 
 
@@ -13,6 +13,18 @@ def strip_dict(d:dict) -> dict:
 
 def strip_dict_short(d:dict) -> dict:
     return {k:v for k,v in d.items() if k in ["price","date"]}
+
+
+def get_part_changed() -> int:
+    """ Returns what part of flats that have a change of price (ever) """
+    mydb = get_db()
+    collection_prices = mydb["_prices"].find({})
+    ids = [i["propertyCode"] for i in collection_prices]
+    C = Counter(ids)
+    no_change = sum(1 for v in C.values() if v == 1)
+    change = sum(1 for v in C.values() if v != 1)
+
+    return round(change/(change+no_change),4)
 
 
 def get_flats_multiprice_max(min_count=3) -> list:
@@ -65,8 +77,7 @@ def get_flats_multiprice_latest(weeks_ago=2, min_changes=3) -> list:
             latest_change_ids.append(document["_id"])
 
     return latest_change_ids
-
-    
+  
 
 def get_price_records_data(max_pricesflats:list):
     """Takes a list of flat IDs and returns data for them"""
@@ -90,6 +101,8 @@ def get_price_records_data(max_pricesflats:list):
         }
 
         results.append(price_dict)
+
+    results["part_change"] = get_part_changed()
         
     return results
 
@@ -311,4 +324,5 @@ if __name__ == "__main__":
     # get_price_records_data(price_changes)
     # get_avg_prices_district()
     # get_highset_price_diff()
+    # get_percent_changed()
     pass

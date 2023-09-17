@@ -79,7 +79,7 @@ def main(args):
             else:
                 comment = "PRICE CHANGE"
                 price_changes += 1
-            print(f"New price: {flat_price} --- {comment}")
+            # print(f"New price: {flat_price} --- {comment}")
 
     print(f"Inserted: {new_flats}, {old_flats} found already existing. Price changes: {price_changes}")
 
