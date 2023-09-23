@@ -24,7 +24,7 @@ def get_part_changed() -> int:
     no_change = sum(1 for v in C.values() if v == 1)
     change = sum(1 for v in C.values() if v != 1)
 
-    return round(change/(change+no_change),4)
+    return round(change*100/(change+no_change),4)
 
 
 def get_flats_multiprice_max(min_count=3) -> list:
@@ -102,7 +102,9 @@ def get_price_records_data(max_pricesflats:list):
 
         results.append(price_dict)
 
-    results["part_change"] = get_part_changed()
+    print(f"get_price_records_data(): {len(results)} apartments with recent price changes")
+
+    results.append({"percent_changed": get_part_changed()})
         
     return results
 

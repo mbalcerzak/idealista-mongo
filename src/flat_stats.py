@@ -417,9 +417,6 @@ if __name__ == "__main__":
     price_records_data = get_price_records_data(max_prices_flats)
     save_json(price_records_data, "most_price_changes")
 
-    # flat_data = get_full_flat_data(price_records_data)
-    # save_json(flat_data, "flat_data")
-
     latest_change_ids = get_flats_multiprice_latest(2)
     prices = get_price_records_data(latest_change_ids)
     save_json(prices, "latest_price_changes")
@@ -427,3 +424,6 @@ if __name__ == "__main__":
     flat_info, sorted_titles = get_info(latest_change_ids)
     save_json(sorted_titles, "ad_titles")
     save_json(flat_info, "flat_info")
+
+    # flat_data = get_full_flat_data(price_records_data)
+    # save_json(flat_data, "flat_data")
