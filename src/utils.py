@@ -129,7 +129,7 @@ def get_info(max_pricesflats):
         subtext = info["suggestedTexts"]
         price_fmt = f"{round(int(prices[-1])/1000)}k EUR"
 
-        title = f'{subtext["title"]} {subtext["subtitle"]} ({price_fmt}, {int(info["size"])} m2)'
+        title = f'{subtext["title"]} {subtext["subtitle"]} ({price_fmt}, {int(info["size"])} m2) [{info["municipality"]}]'
         titles.append({"value": propertyCode, "label": title})
 
         new_dict = {**info}
