@@ -46,6 +46,7 @@ def get_final_df():
     districts_dict[None] = None
 
     df["district_renamed"] = df["district"].apply(lambda x: districts_dict[x])
+    df["exterior"] = df["exterior"].apply(lambda x: 1 if True else 0)
 
     propertyType_oneHot = pd.get_dummies(df[["propertyType"]], prefix="", prefix_sep="")
     district_oneHot = pd.get_dummies(df[["district_renamed"]], prefix="", prefix_sep="")
@@ -55,6 +56,9 @@ def get_final_df():
 
     for distr in sorted(df["district_renamed"].unique()):
         print(distr)
+
+    if 'nan' in list(df_oneHot):
+        df_oneHot.drop('nan', axis=1, inplace=True)
 
     return df_oneHot
 
