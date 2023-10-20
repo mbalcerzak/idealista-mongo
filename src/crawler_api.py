@@ -104,6 +104,18 @@ class DummyParams(BasicParams):
         self.maxItems = 5
         self.numPage = 1
 
+class RentParams(IdealistaParams):
+    def __init__(self):
+        super().__init__()
+        self.operation = "rent"
+
+# class RentPenthouseParams(IdealistaParams):
+#     def __init__(self):
+#         super().__init__()
+#         self.operation = "rent"
+#         self.penthouse = "true"
+
+
 
 def get_flats(
         save_json=True, 
@@ -111,7 +123,9 @@ def get_flats(
         n_pages_x_request = 2000, 
         mab=False, 
         house=False, 
-        yolo_penthouse=False):
+        yolo_penthouse=False,
+        rent=False
+        ):
 
     with open(".db_creds/idealista_cred.json", "r") as f:
         creds_all = json.load(f)
@@ -150,6 +164,8 @@ def get_flats(
                 params = HouseParams().__dict__
             if yolo_penthouse:
                 params = YoloPenthouse().__dict__
+            if rent:
+                params = RentParams().__dict__
             else:
                 params = IdealistaParams().__dict__
 
