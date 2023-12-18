@@ -26,7 +26,9 @@ def main(args):
     house = args.house
     yolo_penthouse = args.yolo_penthouse
     n_pages_x_request = args.pages 
-    flats = get_flats(mab=mab, n_pages_x_request=n_pages_x_request, house=house, yolo_penthouse=yolo_penthouse)
+    rent = args.rent
+    rent_penthouse = args.rent_penthouse
+    flats = get_flats(mab=mab, n_pages_x_request=n_pages_x_request, house=house, yolo_penthouse=yolo_penthouse, rent=rent, rent_penthouse=rent_penthouse)
 
     if not flats:
         print("No flats scraped today")
@@ -38,8 +40,15 @@ def main(args):
 
     db = get_db("admin")
     collection_flats = db["_flats"]
-    collection_prices = db["_prices"]
-    collection_prices_nch = db["_prices_no_change"]
+
+    if rent or rent_penthouse:
+        print("Rented properties")
+        collection_prices = db["_rent_prices"]
+        collection_prices_nch = db["_rent_prices_no_change"]
+    else:
+        print("Properties for sale")
+        collection_prices = db["_prices"]
+        collection_prices_nch = db["_prices_no_change"]
 
     new_flats, old_flats = 0,0
     new_flats_ids = []
@@ -90,6 +99,8 @@ if __name__ == "__main__":
     parser.add_argument('-house', '--house', action="store_true")
     parser.add_argument('-yolo_penthouse', '--yolo_penthouse', action="store_true")
     parser.add_argument("-pages", "--pages", action="store", type=int, choices=range(2, 2001))
+    parser.add_argument('-rent', '--rent', action="store_true")
+    parser.add_argument('-rent_penthouse', '--rent_penthouse', action="store_true")
     args = parser.parse_args()
 
     main(args)
