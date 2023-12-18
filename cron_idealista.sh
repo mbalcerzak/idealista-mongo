@@ -10,4 +10,4 @@ now=$(date +"%m_%d_%Y")
 
 # .venv/bin/python3.9 src/flat_info.py
 # .venv/bin/python3.9 src/penthouse.py
-# .venv/bin/python3.9 src/flat_stats.py &> "logs/log_inside_${now}_price_stats"
+.venv/bin/python3.9 src/flat_stats.py &> "logs/log_inside_${now}_price_stats"
