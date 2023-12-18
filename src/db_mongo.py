@@ -27,7 +27,8 @@ def main(args):
     yolo_penthouse = args.yolo_penthouse
     n_pages_x_request = args.pages 
     rent = args.rent
-    flats = get_flats(mab=mab, n_pages_x_request=n_pages_x_request, house=house, yolo_penthouse=yolo_penthouse, rent=rent)
+    rent_penthouse = args.rent_penthouse
+    flats = get_flats(mab=mab, n_pages_x_request=n_pages_x_request, house=house, yolo_penthouse=yolo_penthouse, rent=rent, rent_penthouse=rent_penthouse)
 
     if not flats:
         print("No flats scraped today")
@@ -40,7 +41,7 @@ def main(args):
     db = get_db("admin")
     collection_flats = db["_flats"]
 
-    if rent:
+    if rent or rent_penthouse:
         print("Rented properties")
         collection_prices = db["_rent_prices"]
         collection_prices_nch = db["_rent_prices_no_change"]
@@ -54,7 +55,7 @@ def main(args):
 
     for flat in flats_with_ids:    
         try:
-            # collection_flats.insert_one(flat) TODO uncomment
+            collection_flats.insert_one(flat)
             # print(f"New flat {flat['propertyCode']}")
             new_flats += 1
             new_flats_ids.append(flat['propertyCode'])
@@ -67,9 +68,6 @@ def main(args):
 
     flat_prices = [{k:v for k,v in flat.items() if k in chosen_keys} for flat in flats]
     price_changes = 0
-
-    print(flat_prices)
-    return
 
     for flat_price in flat_prices:
         flat_price["price"] = int(flat_price["price"])
@@ -102,6 +100,7 @@ if __name__ == "__main__":
     parser.add_argument('-yolo_penthouse', '--yolo_penthouse', action="store_true")
     parser.add_argument("-pages", "--pages", action="store", type=int, choices=range(2, 2001))
     parser.add_argument('-rent', '--rent', action="store_true")
+    parser.add_argument('-rent_penthouse', '--rent_penthouse', action="store_true")
     args = parser.parse_args()
 
     main(args)

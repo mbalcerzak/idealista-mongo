@@ -57,9 +57,9 @@ def today_str() -> str:
 class BasicParams:
     def __init__(self):
         self.locationId = "0-EU-ES-46"
-        self.operation = "sale"
         self.propertyType = "homes"
-        # self.maxItems = 200
+        self.order = "publicationDate"
+        self.locale = "es"
 
 class IdealistaParams(BasicParams):
     def __init__(self):
@@ -68,9 +68,10 @@ class IdealistaParams(BasicParams):
         self.maxPrice = 9_999_999
         # self.minSize = 50
         self.maxSize = 350
-        self.order = "publicationDate"
         self.sort = "desc"
         self.locale = "es"
+        self.operation = "sale"
+
 
 class HouseParams(BasicParams):
     def __init__(self):
@@ -78,10 +79,10 @@ class HouseParams(BasicParams):
         self.minPrice = 1
         self.maxPrice = 300_000
         self.minSize = 90
-        self.order = "publicationDate"
         self.sort = "desc"
         self.locale = "es"
         self.chalet = "true"
+        self.operation = "sale"
 
 
 class MabParams(BasicParams):
@@ -92,11 +93,13 @@ class MabParams(BasicParams):
         self.maxPrice = 300_000
         self.exterior = "true"
         self.hasLift = "true"
+        self.operation = "sale"
 
-class YoloPenthouse(BasicParams):
+class YoloPenthouse(IdealistaParams):
     def __init__(self):
         super().__init__()
         self.penthouse = "true"
+        self.operation = "sale"
     
 class DummyParams(BasicParams):
     def __init__(self):
@@ -109,12 +112,12 @@ class RentParams(IdealistaParams):
         super().__init__()
         self.operation = "rent"
 
-# class RentPenthouseParams(IdealistaParams):
-#     def __init__(self):
-#         super().__init__()
-#         self.operation = "rent"
-#         self.penthouse = "true"
 
+class RentPenthouseParams(IdealistaParams):
+    def __init__(self):
+        super().__init__()
+        self.operation = "rent"
+        self.penthouse = "true"
 
 
 def get_flats(
@@ -124,7 +127,8 @@ def get_flats(
         mab=False, 
         house=False, 
         yolo_penthouse=False,
-        rent=False
+        rent=False,
+        rent_penthouse=False
         ):
 
     with open(".db_creds/idealista_cred.json", "r") as f:
@@ -162,10 +166,14 @@ def get_flats(
                 params = MabParams().__dict__
             elif house:
                 params = HouseParams().__dict__
-            if yolo_penthouse:
+            elif yolo_penthouse:
                 params = YoloPenthouse().__dict__
-            if rent:
+            elif rent:
+                print("ARGS: rent")
                 params = RentParams().__dict__
+            elif rent_penthouse:
+                print("ARGS: rent_penthouse")
+                params = RentPenthouseParams().__dict__
             else:
                 params = IdealistaParams().__dict__
 
