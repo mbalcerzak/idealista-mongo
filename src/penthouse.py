@@ -4,7 +4,7 @@ import pandas as pd
 from datetime import date
 from dateutil.relativedelta import relativedelta
 
-from flat_info import save_json
+from flat_stats import save_json
 from utils import get_price_records_data
 from db_mongo import get_db
 
@@ -172,4 +172,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    json_into_df()
