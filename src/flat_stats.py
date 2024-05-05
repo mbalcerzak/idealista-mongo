@@ -398,7 +398,7 @@ if __name__ == "__main__":
     combined["dates"] = get_dates()
     combined["flat_count"] = get_flat_count()
     combined["flats_per_location"] = get_flats_per_location()
-    combined["flats_per_area_cat"] = get_flats_per_area_cat()
+    combined["flats_per_area_cat"] = get_flats_per_area_cat() 
     combined["flats_per_num_rooms"] = get_flats_per_num_rooms()
     combined["scraped_per_day"] = get_scraped_per_day()
     combined["scraped_per_day_m_avg"] = get_scraped_per_day_m_avg()
@@ -417,7 +417,7 @@ if __name__ == "__main__":
     price_records_data = get_price_records_data(max_prices_flats)
     save_json(price_records_data, "most_price_changes")
 
-    latest_change_ids = get_flats_multiprice_latest(2)
+    latest_change_ids = get_flats_multiprice_latest(5)
     prices = get_price_records_data(latest_change_ids)
     save_json(prices, "latest_price_changes")
 
