@@ -1,3 +1,17 @@
 *.json
+!output/*
+
 __pycache__/
 .venv/
+
+secrets.toml
+
+.DS_Store
+
+log_inside*
+log
+
+*.parquet
+*.csv
+
+*.env
