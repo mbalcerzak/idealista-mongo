@@ -12,3 +12,6 @@ log_inside*
 log
 
 *.parquet
+*.csv
+
+*.env

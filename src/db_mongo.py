@@ -4,7 +4,7 @@ import json
 import logging
 from argparse import ArgumentParser
 
-from crawler_api import get_flats
+from src.crawler_api import get_flats
 
 
 def get_db(permission:str="read"):
@@ -28,7 +28,14 @@ def main(args):
     n_pages_x_request = args.pages 
     rent = args.rent
     rent_penthouse = args.rent_penthouse
-    flats = get_flats(mab=mab, n_pages_x_request=n_pages_x_request, house=house, yolo_penthouse=yolo_penthouse, rent=rent, rent_penthouse=rent_penthouse)
+    flats = get_flats(
+                mab=mab, 
+                n_pages_x_request=n_pages_x_request, 
+                house=house, 
+                yolo_penthouse=yolo_penthouse, 
+                rent=rent, 
+                rent_penthouse=rent_penthouse
+                )
 
     if not flats:
         print("No flats scraped today")
@@ -56,11 +63,9 @@ def main(args):
     for flat in flats_with_ids:    
         try:
             collection_flats.insert_one(flat)
-            # print(f"New flat {flat['propertyCode']}")
             new_flats += 1
             new_flats_ids.append(flat['propertyCode'])
         except errors.DuplicateKeyError as e:
-            # print(f"Flat {flat['propertyCode']} exists")
             old_flats += 1
             continue
 
@@ -79,18 +84,16 @@ def main(args):
         mydoc = collection_prices.find(myquery)
 
         if len(list(mydoc)) > 0:
-            # print(f"Price remains the same: {flat_price}")
             collection_prices_nch.insert_one(flat_price)
         else:
             collection_prices.insert_one(flat_price)
-            if flat_price["propertyCode"] in new_flats_ids:
-                comment = "new flat"
-            else:
-                comment = "PRICE CHANGE"
+            if flat_price["propertyCode"] not in new_flats_ids:
                 price_changes += 1
-            # print(f"New price: {flat_price} --- {comment}")
 
     print(f"Inserted: {new_flats}, {old_flats} found already existing. Price changes: {price_changes}")
+
+    with open("output/newest_flats.json", "w") as f:
+        json.dump(flats_with_ids, f)
 
 
 if __name__ == "__main__":

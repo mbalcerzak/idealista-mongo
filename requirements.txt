@@ -2,3 +2,14 @@ pandas
 numpy
 urllib3
 plotly
+pymongo
+requests
+simplejson
+spacy
+pyarrow 
+fastparquet
+mlflow
+scikit-learn
+pyTelegramBotAPI
+
+telepot

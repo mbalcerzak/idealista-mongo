@@ -30,7 +30,7 @@ from utils import get_flats_multiprice_max, get_price_records_data, \
                     get_full_flat_data, get_info, \
                     get_flats_multiprice_latest
 import json
-from db_mongo import get_db
+from src.db_mongo import get_db
 
 
 def get_bins_labels():
