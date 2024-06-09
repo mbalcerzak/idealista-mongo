@@ -92,8 +92,10 @@ def main(args):
 
     print(f"Inserted: {new_flats}, {old_flats} found already existing. Price changes: {price_changes}")
 
-    with open("output/newest_flats.json", "w") as f:
-        json.dump(flats_with_ids, f)
+
+    if not(yolo_penthouse or mab or rent or rent_penthouse):
+        with open("output/newest_flats.json", "w") as f:
+            json.dump(flats_with_ids, f)
 
 
 if __name__ == "__main__":

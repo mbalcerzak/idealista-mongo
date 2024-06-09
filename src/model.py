@@ -92,9 +92,9 @@ def find_terrace_sentence(sentence: str) -> str:
 
     if terrace_match:
         terrace_sentence = terrace_match.group()
-        print("-------------")
-        print(sentence)
-        print(f"{terrace_sentence=}")
+        # print("-------------")
+        # print(sentence)
+        # print(f"{terrace_sentence=}")
 
     return terrace_sentence
 
@@ -204,7 +204,7 @@ def process_data(df: pd.DataFrame) -> pd.DataFrame:
     # df["description_clean"] = df["description"].apply(lambda x: clean_description(x))
 
     # df["terrace_sentence"] = df["description"].apply(lambda x: get_terrace_from_description(x))
-    # df["terrace_size"] = df["terrace_sentence"].apply(lambda x: find_terrace_size(x))
+    # df["terraceSize"] = df["terrace_sentence"].apply(lambda x: find_terrace_size(x))
 
     # df[["okupas", "alquilado", "nudo"]] = df["description"].apply(lambda x: get_legal_status_info(x))
     # df["balcon"] = df["description"].apply(lambda x: get_balcon(x))
@@ -213,7 +213,7 @@ def process_data(df: pd.DataFrame) -> pd.DataFrame:
   
     df.to_csv("output/okupas_processed.csv")
     
-    # print(df[["propertyCode", "terrace_sentence", "terrace_size"]].head(20))
+    # print(df[["propertyCode", "terrace_sentence", "terraceSize"]].head(20))
 
     # c = Counter(df["propertyCode"])
     # counter = pd.DataFrame.from_dict(c, orient='index').reset_index()
