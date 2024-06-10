@@ -10,6 +10,4 @@ pyarrow
 fastparquet
 mlflow
 scikit-learn
-pyTelegramBotAPI
-
 telepot

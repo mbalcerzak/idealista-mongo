@@ -3,7 +3,7 @@ import requests
 import telepot
 import json
 
-from src.model import find_terrace_sentence, find_terrace_size, get_balcon
+from src.preprocessing import find_terrace_sentence, find_terrace_size, get_balcon
 
 token = os.environ.get('BOT_TOKEN')
 chat_id = os.environ.get('CHAT_ID')
@@ -29,20 +29,21 @@ def get_newest_flats() -> list:
 
     for flat in flats:
         if flat["municipality"] == "València":
-            terrace_str = find_terrace_sentence(flat["description"])
-            terrace_size = find_terrace_size(terrace_str)
+            if flat["price"] < 300000:
+                terrace_str = find_terrace_sentence(flat["description"])
+                terrace_size = find_terrace_size(terrace_str)
 
-            if terrace_str:
-                flat_new = {k:v for k, v in flat.items() if k in cols}
-                flat_new['terraceSize'] = terrace_size
+                if terrace_str:
+                    flat_new = {k:v for k, v in flat.items() if k in cols}
+                    flat_new['terraceSize'] = terrace_size
 
-                balcon = get_balcon(flat["description"])
-                if balcon:
-                    flat_new['balcon'] = True
+                    balcon = get_balcon(flat["description"])
+                    if balcon:
+                        flat_new['balcon'] = True
 
-                flat_new['title'] = flat["suggestedTexts"]["title"]
+                    flat_new['title'] = flat["suggestedTexts"]["title"]
 
-                terrace_flats.append(flat_new)
+                    terrace_flats.append(flat_new)
 
     return terrace_flats
  
@@ -50,12 +51,14 @@ def get_newest_flats() -> list:
 def format_message(flat: dict) -> str:
     info_cols = ['propertyType', 'price', 'neighborhood', 'size', 'terraceSize',
                 'floor', 'exterior', 'rooms', 'bathrooms', 'newDevelopment', 'hasLift']
+    
+    common_cols = [i for i in info_cols if i in flat.keys()]
 
-    formatted_dict = '\n'.join([f"{key}: {flat[key]}" for key in info_cols])
+    formatted_dict = '\n'.join([f"{key}: {flat[key]}" for key in common_cols])
     # Markdown has a meltdown when special character "." is used so we're removing it
-    formatted_dict = formatted_dict.replace(".0","")
+    formatted_dict = formatted_dict.replace(".0","").replace('-', '')
 
-    text = (f"""{'_'*100}\n*\n*||ELO MORDO TEST TEST\\!\\!1||\n*\n*\n*__{flat['title']}__* \n\n{formatted_dict} \n\n[Idealista link]({flat['url']})""")
+    text = (f"""*__{flat['title']}__*\n{'x'*80}\n\n{formatted_dict} \n\n[Idealista link]({flat['url']})""")
 
     return text
 
@@ -71,7 +74,7 @@ def main():
         text = format_message(flat)
 
         print(text)
-        # send_message(text)
+        send_message(text)
 
 
 if __name__ == "__main__":

@@ -59,12 +59,14 @@ def main(args):
 
     new_flats, old_flats = 0,0
     new_flats_ids = []
+    new_flats_info = []
 
     for flat in flats_with_ids:    
         try:
             collection_flats.insert_one(flat)
             new_flats += 1
             new_flats_ids.append(flat['propertyCode'])
+            new_flats_info.append(flat)
         except errors.DuplicateKeyError as e:
             old_flats += 1
             continue
@@ -95,7 +97,7 @@ def main(args):
 
     if not(yolo_penthouse or mab or rent or rent_penthouse):
         with open("output/newest_flats.json", "w") as f:
-            json.dump(flats_with_ids, f)
+            json.dump(new_flats_info, f)
 
 
 if __name__ == "__main__":
