@@ -29,7 +29,7 @@ def get_newest_flats() -> list:
 
     print(f"{len(flats)} New flats today")
 
-    cols = ["neighborhood", "thumbnail", "url",  "hasLift", "floor", "price", "size", 
+    cols = ["neighborhood",  "url",  "hasLift", "floor", "price", "size", 
             "propertyType", "rooms", "bathrooms", "newDevelopment", "exterior"]
 
     terrace_flats = []
@@ -63,29 +63,30 @@ def get_penthouses(penthouse) -> list:
 
     print(f"{len(flats)} New penthouses today")
 
-    cols = ["neighborhood", "thumbnail", "url",  "hasLift", "floor", "price", "size", 
+    cols = ["neighborhood", "url",  "hasLift", "floor", "price", "size", 
             "propertyType", "rooms", "bathrooms", "newDevelopment", "exterior"]
 
     terrace_flats = []
 
     for flat in flats:
         if flat["municipality"] == "València":
-            terrace_str = get_terrace_from_description(flat["description"])
-            terrace_size = find_terrace_size(terrace_str)
-            flat_new = {k:v for k, v in flat.items() if k in cols}
-            flat_new['terraceSize'] = terrace_size
-            flat_new["terrace_str"] = terrace_str
-            terrace_yn = get_terrace_yn(flat["description"])
-            flat_new["hasTerrace"] = terrace_yn
+            if flat["price"] < 300000:
+                terrace_str = get_terrace_from_description(flat["description"])
+                terrace_size = find_terrace_size(terrace_str)
+                flat_new = {k:v for k, v in flat.items() if k in cols}
+                flat_new['terraceSize'] = terrace_size
+                flat_new["terrace_str"] = terrace_str
+                terrace_yn = get_terrace_yn(flat["description"])
+                flat_new["hasTerrace"] = terrace_yn
 
-            balcon = get_balcon(flat["description"])
-            if balcon:
-                flat_new['balcon'] = True
+                balcon = get_balcon(flat["description"])
+                if balcon:
+                    flat_new['balcon'] = True
 
-            flat_new['title'] = flat["suggestedTexts"]["title"]
-            flat_new['title'] = re.sub(r'[^\w\s]', ' ', flat_new['title'])
+                flat_new['title'] = flat["suggestedTexts"]["title"]
+                flat_new['title'] = re.sub(r'[^\w\s]', ' ', flat_new['title'])
 
-            terrace_flats.append(flat_new)
+                terrace_flats.append(flat_new)
 
     return terrace_flats
 
@@ -100,13 +101,17 @@ def format_message(flat: dict) -> str:
     # Markdown has a meltdown when special character "." is used so we're removing it
     formatted_dict = formatted_dict.replace(".0","").replace('-', '')
 
-    text = (f"""*__{flat['title']}__*\n{'x'*80}\n\n{formatted_dict} \n\n[Idealista link]({flat['url']})""")
+    print(formatted_dict)
+    print(flat['title'])
+    print(flat['url'])
+
+    text = (f"""\n\n\n{flat['title']}{"-"*40}\n\n{formatted_dict} \n\n[Idealista link]({flat['url']})""")
 
     return text
 
 
 def send_message(text):
-   bot.sendMessage(chat_id, text, parse_mode='MarkdownV2')
+   bot.sendMessage(chat_id, text)
 
 
 def main(args):
@@ -121,11 +126,11 @@ def main(args):
         print("ALL FLATS")
 
     for flat in new_flats:
-        print(flat)
+        # print(flat)
         text = format_message(flat)
 
-        print(text)
-        # send_message(text)
+        # print(text)
+        send_message(text)
 
 
 if __name__ == "__main__":

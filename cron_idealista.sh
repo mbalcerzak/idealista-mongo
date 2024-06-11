@@ -1,6 +1,7 @@
 cd /Users/malgorzatabslcerzak/Documents/projects/idealista-mongo/
 
 source .venv/bin/activate
+source .env
 
 now=$(date +"%m_%d_%Y")
 .venv/bin/python3.9 -m src.db_mongo --pages 20 &> "logs/log_inside_${now}"
