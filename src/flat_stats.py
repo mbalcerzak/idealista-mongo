@@ -25,8 +25,7 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 from collections import defaultdict, Counter
 
-
-from utils import get_flats_multiprice_max, get_price_records_data, \
+from src.utils import get_flats_multiprice_max, get_price_records_data, \
                     get_full_flat_data, get_info, \
                     get_flats_multiprice_latest
 import json

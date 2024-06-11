@@ -99,6 +99,10 @@ def main(args):
         with open("output/newest_flats.json", "w") as f:
             json.dump(new_flats_info, f)
 
+    if yolo_penthouse:
+        with open("output/newest_penthouses.json", "w") as f:
+            json.dump(new_flats_info, f)       
+
 
 if __name__ == "__main__":
     parser = ArgumentParser()

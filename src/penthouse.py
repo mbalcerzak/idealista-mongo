@@ -4,9 +4,9 @@ import pandas as pd
 from datetime import date
 from dateutil.relativedelta import relativedelta
 
-from flat_stats import save_json
-from utils import get_price_records_data
-from db_mongo import get_db
+from src.flat_stats import save_json
+from src.utils import get_price_records_data
+from src.db_mongo import get_db
 
 
 def find_penthouses():

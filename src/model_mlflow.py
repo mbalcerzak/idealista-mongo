@@ -10,9 +10,6 @@ import numpy as np
 
 from src.preprocessing import clean_description
 
-
-
-
 def main():
     df = pd.read_csv("output/processed_data1.csv")
     print(list(df))
