@@ -3,6 +3,8 @@ from pymongo import MongoClient, errors
 import json
 import logging
 from argparse import ArgumentParser
+import io
+from PIL import Image
 
 from src.crawler_api import get_flats
 
@@ -47,6 +49,7 @@ def main(args):
 
     db = get_db("admin")
     collection_flats = db["_flats"]
+    photos_db = db["photos"]
 
     if rent or rent_penthouse:
         print("Rented properties")

@@ -29,7 +29,7 @@ def get_newest_flats() -> list:
 
     print(f"{len(flats)} New flats today")
 
-    cols = ["neighborhood",  "url",  "hasLift", "floor", "price", "size", 
+    cols = ["thumbnail", "neighborhood",  "url",  "hasLift", "floor", "price", "size", 
             "propertyType", "rooms", "bathrooms", "newDevelopment", "exterior"]
 
     terrace_flats = []
@@ -42,7 +42,7 @@ def get_newest_flats() -> list:
                 terrace_yn = get_terrace_yn(flat["description"])
                 balcon = get_balcon(flat["description"])
 
-                if terrace_str or terrace_yn or balcon:
+                if terrace_str or terrace_yn:
                     flat_new = {k:v for k, v in flat.items() if k in cols}
                     flat_new['terraceSize'] = terrace_size
                     flat_new["terrace_str"] = terrace_str
@@ -63,7 +63,7 @@ def get_penthouses(penthouse) -> list:
 
     print(f"{len(flats)} New penthouses today")
 
-    cols = ["neighborhood", "url",  "hasLift", "floor", "price", "size", 
+    cols = ["thumbnail", "neighborhood", "url",  "hasLift", "floor", "price", "size", 
             "propertyType", "rooms", "bathrooms", "newDevelopment", "exterior"]
 
     terrace_flats = []
@@ -78,10 +78,7 @@ def get_penthouses(penthouse) -> list:
                 flat_new["terrace_str"] = terrace_str
                 terrace_yn = get_terrace_yn(flat["description"])
                 flat_new["hasTerrace"] = terrace_yn
-
-                balcon = get_balcon(flat["description"])
-                if balcon:
-                    flat_new['balcon'] = True
+                flat_new['balcon'] = get_balcon(flat["description"])
 
                 flat_new['title'] = flat["suggestedTexts"]["title"]
                 flat_new['title'] = re.sub(r'[^\w\s]', ' ', flat_new['title'])
@@ -93,7 +90,7 @@ def get_penthouses(penthouse) -> list:
 
 def format_message(flat: dict) -> str:
     info_cols = ['propertyType', 'price', 'neighborhood', 'size', "hasTerrace", 'terrace_str', 'terraceSize',
-                'floor', 'exterior', 'rooms', 'bathrooms', 'newDevelopment', 'hasLift']
+                'balcon', 'floor', 'exterior', 'rooms', 'bathrooms', 'newDevelopment', 'hasLift']
     
     common_cols = [i for i in info_cols if i in flat.keys()]
 
@@ -105,15 +102,18 @@ def format_message(flat: dict) -> str:
     print(flat['title'])
     print(flat['url'])
 
-    text = (f"""\n\n\n{flat['title']}{"-"*40}\n\n{formatted_dict} \n\n[Idealista link]({flat['url']})""")
+    text = (f"""\n\n\n{flat['title']}{"-"*40}\n\n{formatted_dict}\n\n{flat['url']}""")
 
-    return text
+    image = flat["thumbnail"]
+
+    return text, image
 
 
-def send_message(text):
+def send_message(text, image):
    bot.sendMessage(chat_id, text)
+   bot.sendPhoto(chat_id, image)
 
-
+ 
 def main(args):
     print(args.__dict__)
     penthouse = args.penthouse
@@ -122,15 +122,12 @@ def main(args):
         new_flats = get_penthouses(penthouse)
         print("PENTHOUSE")
     else:
-        new_flats = get_newest_flats(penthouse)
+        new_flats = get_newest_flats()
         print("ALL FLATS")
 
     for flat in new_flats:
-        # print(flat)
-        text = format_message(flat)
-
-        # print(text)
-        send_message(text)
+        text, image = format_message(flat)
+        send_message(text, image)
 
 
 if __name__ == "__main__":

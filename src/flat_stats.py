@@ -89,7 +89,7 @@ def get_flats_per_area_cat() -> dict:
     db = get_db()
     collection_flats = db["_flats"]
 
-    df = pd.DataFrame(list(collection_flats.find({})))
+    df = pd.DataFrame(list(collection_flats.find({"operation": "sale"})))
 
     df = df[["propertyCode", "size"]]
 
@@ -246,7 +246,7 @@ def get_price_m_location() -> dict:
     collection_prices = mydb["_prices"] 
     collection_prices_nchg = mydb["_prices_no_change"] 
 
-    flats = collection_flats.find()
+    flats = collection_flats.find({"operation": "sale"})
         
     df_flats =  pd.DataFrame(list(flats))
 
@@ -298,7 +298,7 @@ def get_price_m_loc_area_cat() -> dict:
     collection_prices = mydb["_prices"] 
     collection_prices_nchg = mydb["_prices_no_change"] 
 
-    flats = collection_flats.find()
+    flats = collection_flats.find({"operation": "sale"})
         
     df_flats =  pd.DataFrame(list(flats))
 

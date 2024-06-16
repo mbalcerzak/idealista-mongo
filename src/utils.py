@@ -1,6 +1,6 @@
 import json
 import pymongo
-from db_mongo import get_db
+from src.db_mongo import get_db
 from bson.json_util import dumps
 import pandas as pd
 from collections import defaultdict, Counter
