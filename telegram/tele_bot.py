@@ -4,6 +4,7 @@ import telepot
 import json
 import re
 from argparse import ArgumentParser
+import webbrowser
 
 from src.preprocessing import get_terrace_from_description, \
             find_terrace_size, get_balcon, get_terrace_yn
@@ -12,6 +13,14 @@ token = os.environ.get('BOT_TOKEN')
 chat_id = os.environ.get('CHAT_ID')
 
 bot = telepot.Bot(token)
+
+
+def open_link_in_browser(link):
+    try:
+        webbrowser.open(link)
+        print(f"Successfully opened {link}")
+    except Exception as e:
+        print(f"Failed to open {link}. Error: {e}")
 
 
 def load_newest_flats(penthouse=False):
@@ -60,6 +69,8 @@ def get_newest_flats() -> list:
 def get_penthouses(penthouse) -> list:
     """Picks flats according to requirments from the onces recently scraped"""
     flats = load_newest_flats(penthouse)
+    # with open("output/newest_flats.json", "r") as f:
+    #     flats = json.load(f)
 
     print(f"{len(flats)} New penthouses today")
 
@@ -69,21 +80,24 @@ def get_penthouses(penthouse) -> list:
     terrace_flats = []
 
     for flat in flats:
-        if flat["municipality"] == "València":
-            if flat["price"] < 300000:
-                terrace_str = get_terrace_from_description(flat["description"])
-                terrace_size = find_terrace_size(terrace_str)
-                flat_new = {k:v for k, v in flat.items() if k in cols}
-                flat_new['terraceSize'] = terrace_size
-                flat_new["terrace_str"] = terrace_str
-                terrace_yn = get_terrace_yn(flat["description"])
-                flat_new["hasTerrace"] = terrace_yn
-                flat_new['balcon'] = get_balcon(flat["description"])
+        try:
+            if flat["municipality"] == "València":
+                if flat["price"] < 300000:
+                    terrace_str = get_terrace_from_description(flat["description"])
+                    terrace_size = find_terrace_size(terrace_str)
+                    flat_new = {k:v for k, v in flat.items() if k in cols}
+                    flat_new['terraceSize'] = terrace_size
+                    flat_new["terrace_str"] = terrace_str
+                    terrace_yn = get_terrace_yn(flat["description"])
+                    flat_new["hasTerrace"] = terrace_yn
+                    flat_new['balcon'] = get_balcon(flat["description"])
 
-                flat_new['title'] = flat["suggestedTexts"]["title"]
-                flat_new['title'] = re.sub(r'[^\w\s]', ' ', flat_new['title'])
+                    flat_new['title'] = flat["suggestedTexts"]["title"]
+                    flat_new['title'] = re.sub(r'[^\w\s]', ' ', flat_new['title'])
 
-                terrace_flats.append(flat_new)
+                    terrace_flats.append(flat_new)
+        except KeyError as e:
+            continue
 
     return terrace_flats
 
@@ -120,14 +134,20 @@ def main(args):
 
     if penthouse:
         new_flats = get_penthouses(penthouse)
-        print("PENTHOUSE")
+        print("PENTHOUSES")
     else:
         new_flats = get_newest_flats()
         print("ALL FLATS")
 
+    print(f"New flats matching criteria: {len(new_flats)}")
+
     for flat in new_flats:
         text, image = format_message(flat)
         send_message(text, image)
+
+        if penthouse:
+            link = flat['url']
+            open_link_in_browser(link)
 
 
 if __name__ == "__main__":

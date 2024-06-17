@@ -56,9 +56,6 @@ def main(args):
 
     print(f"\nScraped flats: {len(flats)}\n")
 
-    with open("data/scraped_api.json", "r") as f:
-        flats = json.load(f)
-
     flats_with_ids = [dict(flat, **{'_id':int(flat["propertyCode"])}) for flat in flats]
 
     print(len(flats_with_ids))
@@ -84,10 +81,11 @@ def main(args):
         image_flat = get_image_idealista(flat["thumbnail"])
         try:
             collection_flats.insert_one(flat)
-            collections_photos.insert_one({"_id":int(flat['propertyCode']), "image":image_flat})
             new_flats += 1
             new_flats_ids.append(flat['propertyCode'])
             new_flats_info.append(flat)
+
+            collections_photos.insert_one({"_id":int(flat['propertyCode']), "image":image_flat})
         except errors.DuplicateKeyError as e:
             old_flats += 1
             continue
