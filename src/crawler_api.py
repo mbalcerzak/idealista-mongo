@@ -1,9 +1,7 @@
 import base64
-import os
 import requests
 import json
 import simplejson
-import configparser
 from datetime import datetime
 
 

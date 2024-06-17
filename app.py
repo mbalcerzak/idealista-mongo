@@ -2,6 +2,19 @@ import streamlit as st
 import urllib.request
 import json
 import plotly.graph_objects as go
+from PIL import Image
+from io import BytesIO
+
+
+def get_image_mongo(collection, image_id):
+    image_document = collection.find_one({"_id": image_id})
+    if image_document is None:
+        print(f"No image found with ID: {image_id}")
+        return      
+    
+    image_data = image_document["image"]
+    image = Image.open(BytesIO(image_data))
+    return image
 
 
 def fmt_price(x:int):

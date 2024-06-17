@@ -1,5 +1,4 @@
 import pandas as pd
-from src.db_mongo import get_db
 import typing
 from collections import Counter
 import re
@@ -12,6 +11,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error
 import joblib 
+
+from src.db_mongo import get_db
 
 
 def load_stopwords_es():

@@ -1,10 +1,10 @@
 import pymongo
-from pymongo import MongoClient, errors
+from pymongo import errors
 import json
-import logging
 from argparse import ArgumentParser
-import io
 from PIL import Image
+import requests
+from io import BytesIO
 
 from src.crawler_api import get_flats
 
@@ -20,6 +20,17 @@ def get_db(permission:str="read"):
         )
     mydb = cluster["flats"]
     return mydb
+
+
+def get_image_idealista(image_url: str) :
+    response = requests.get(image_url)
+    response.raise_for_status()
+    image = Image.open(BytesIO(response.content))
+    image_bytes = BytesIO()
+    image.save(image_bytes, format=image.format)
+    image_bytes = image_bytes.getvalue()
+
+    return image_bytes
 
 
 def main(args):
@@ -45,11 +56,16 @@ def main(args):
 
     print(f"\nScraped flats: {len(flats)}\n")
 
+    with open("data/scraped_api.json", "r") as f:
+        flats = json.load(f)
+
     flats_with_ids = [dict(flat, **{'_id':int(flat["propertyCode"])}) for flat in flats]
+
+    print(len(flats_with_ids))
 
     db = get_db("admin")
     collection_flats = db["_flats"]
-    photos_db = db["photos"]
+    collections_photos = db["photos"]
 
     if rent or rent_penthouse:
         print("Rented properties")
@@ -64,9 +80,11 @@ def main(args):
     new_flats_ids = []
     new_flats_info = []
 
-    for flat in flats_with_ids:    
+    for flat in flats_with_ids:  
+        image_flat = get_image_idealista(flat["thumbnail"])
         try:
             collection_flats.insert_one(flat)
+            collections_photos.insert_one({"_id":int(flat['propertyCode']), "image":image_flat})
             new_flats += 1
             new_flats_ids.append(flat['propertyCode'])
             new_flats_info.append(flat)
@@ -96,7 +114,6 @@ def main(args):
                 price_changes += 1
 
     print(f"Inserted: {new_flats}, {old_flats} found already existing. Price changes: {price_changes}")
-
 
     if not(yolo_penthouse or mab or rent or rent_penthouse):
         with open("output/newest_flats.json", "w") as f:

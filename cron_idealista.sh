@@ -4,6 +4,8 @@ source .venv/bin/activate
 source .env
 
 now=$(date +"%m_%d_%Y")
+# .venv/bin/python3.9 -m src.db_mongo --pages 2 &> "logs/log_inside_${now}"
+
 .venv/bin/python3.9 -m src.db_mongo --pages 20 &> "logs/log_inside_${now}"
 .venv/bin/python3.9 -m src.db_mongo --pages 3  --yolo_penthouse &> "logs/log_inside_${now}_penthouse"
 .venv/bin/python3.9 -m src.db_mongo --pages 4  --rent &> "logs/log_inside_${now}_rent"

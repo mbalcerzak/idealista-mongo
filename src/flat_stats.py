@@ -21,14 +21,11 @@ Script to create JSON in a format read by mabdata.com charts
 """
 import json
 import pandas as pd
-from datetime import date
-from dateutil.relativedelta import relativedelta
 from collections import defaultdict, Counter
 
 from src.utils import get_flats_multiprice_max, get_price_records_data, \
                     get_full_flat_data, get_info, \
                     get_flats_multiprice_latest
-import json
 from src.db_mongo import get_db
 
 
