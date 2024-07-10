@@ -332,6 +332,7 @@ def get_image_mongo(collection, image_id):
     image = Image.open(BytesIO(image_data))
     return image    
 
+
 if __name__ == "__main__":
     # price_changes = get_flats_id()
     # get_price_records_data(price_changes)

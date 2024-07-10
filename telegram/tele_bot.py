@@ -145,9 +145,9 @@ def main(args):
         text, image = format_message(flat)
         send_message(text, image)
 
-        if penthouse:
-            link = flat['url']
-            open_link_in_browser(link)
+        # if penthouse:
+        #     link = flat['url']
+        #     open_link_in_browser(link)
 
 
 if __name__ == "__main__":
