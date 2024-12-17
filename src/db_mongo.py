@@ -79,7 +79,9 @@ def main(args):
 
     # Making sure the bot will not send the info about old flats
     with open("output/newest_penthouses.json", "w") as f:
-        json.dump(new_flats_info, f)     
+        json.dump([], f)
+    with open("output/newest_flats.json", "w") as f:
+        json.dump([], f)     
 
     for flat in flats_with_ids:  
         image_flat = get_image_idealista(flat["thumbnail"])

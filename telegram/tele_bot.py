@@ -45,7 +45,7 @@ def get_newest_flats() -> list:
 
     for flat in flats:
         if flat["municipality"] == "València":
-            if flat["price"] < 300000:
+            if flat["price"] < 500000:
                 terrace_str = get_terrace_from_description(flat["description"])
                 terrace_size = find_terrace_size(terrace_str)
                 terrace_yn = get_terrace_yn(flat["description"])
