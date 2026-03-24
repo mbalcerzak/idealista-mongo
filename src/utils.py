@@ -50,7 +50,7 @@ def get_flats_multiprice_max(min_count=3) -> list:
     return max_pricesflats
 
 
-def get_flats_multiprice_latest(weeks_ago=2, min_changes=3) -> list:
+def get_flats_multiprice_latest(weeks_ago=2, min_changes=2) -> list:
     """
     Returns flats' IDs of flats with most recent price changes
     """

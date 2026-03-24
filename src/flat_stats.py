@@ -413,7 +413,7 @@ if __name__ == "__main__":
     price_records_data = get_price_records_data(max_prices_flats)
     save_json(price_records_data, "most_price_changes")
 
-    latest_change_ids = get_flats_multiprice_latest(5)
+    latest_change_ids = get_flats_multiprice_latest(6)
     prices = get_price_records_data(latest_change_ids)
     save_json(prices, "latest_price_changes")
 
