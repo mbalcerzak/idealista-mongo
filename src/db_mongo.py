@@ -1,8 +1,10 @@
 import pymongo
-from pymongo import MongoClient, errors
+from pymongo import errors
 import json
-import logging
 from argparse import ArgumentParser
+from PIL import Image
+import requests
+from io import BytesIO
 
 from src.crawler_api import get_flats
 
@@ -18,6 +20,17 @@ def get_db(permission:str="read"):
         )
     mydb = cluster["flats"]
     return mydb
+
+
+def get_image_idealista(image_url: str) :
+    response = requests.get(image_url)
+    response.raise_for_status()
+    image = Image.open(BytesIO(response.content))
+    image_bytes = BytesIO()
+    image.save(image_bytes, format=image.format)
+    image_bytes = image_bytes.getvalue()
+
+    return image_bytes
 
 
 def main(args):
@@ -45,8 +58,11 @@ def main(args):
 
     flats_with_ids = [dict(flat, **{'_id':int(flat["propertyCode"])}) for flat in flats]
 
+    print(len(flats_with_ids))
+
     db = get_db("admin")
     collection_flats = db["_flats"]
+    collections_photos = db["photos"]
 
     if rent or rent_penthouse:
         print("Rented properties")
@@ -59,12 +75,23 @@ def main(args):
 
     new_flats, old_flats = 0,0
     new_flats_ids = []
+    new_flats_info = []
 
-    for flat in flats_with_ids:    
+    # Making sure the bot will not send the info about old flats
+    with open("output/newest_penthouses.json", "w") as f:
+        json.dump([], f)
+    with open("output/newest_flats.json", "w") as f:
+        json.dump([], f)     
+
+    for flat in flats_with_ids:  
+        image_flat = get_image_idealista(flat["thumbnail"])
         try:
             collection_flats.insert_one(flat)
             new_flats += 1
             new_flats_ids.append(flat['propertyCode'])
+            new_flats_info.append(flat)
+
+            collections_photos.insert_one({"_id":int(flat['propertyCode']), "image":image_flat})
         except errors.DuplicateKeyError as e:
             old_flats += 1
             continue
@@ -92,10 +119,13 @@ def main(args):
 
     print(f"Inserted: {new_flats}, {old_flats} found already existing. Price changes: {price_changes}")
 
-
     if not(yolo_penthouse or mab or rent or rent_penthouse):
         with open("output/newest_flats.json", "w") as f:
-            json.dump(flats_with_ids, f)
+            json.dump(new_flats_info, f)
+
+    if yolo_penthouse:
+        with open("output/newest_penthouses.json", "w") as f:
+            json.dump(new_flats_info, f)       
 
 
 if __name__ == "__main__":

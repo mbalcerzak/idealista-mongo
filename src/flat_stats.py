@@ -21,15 +21,11 @@ Script to create JSON in a format read by mabdata.com charts
 """
 import json
 import pandas as pd
-from datetime import date
-from dateutil.relativedelta import relativedelta
 from collections import defaultdict, Counter
 
-
-from utils import get_flats_multiprice_max, get_price_records_data, \
+from src.utils import get_flats_multiprice_max, get_price_records_data, \
                     get_full_flat_data, get_info, \
                     get_flats_multiprice_latest
-import json
 from src.db_mongo import get_db
 
 
@@ -90,7 +86,7 @@ def get_flats_per_area_cat() -> dict:
     db = get_db()
     collection_flats = db["_flats"]
 
-    df = pd.DataFrame(list(collection_flats.find({})))
+    df = pd.DataFrame(list(collection_flats.find({"operation": "sale"})))
 
     df = df[["propertyCode", "size"]]
 
@@ -247,7 +243,7 @@ def get_price_m_location() -> dict:
     collection_prices = mydb["_prices"] 
     collection_prices_nchg = mydb["_prices_no_change"] 
 
-    flats = collection_flats.find()
+    flats = collection_flats.find({"operation": "sale"})
         
     df_flats =  pd.DataFrame(list(flats))
 
@@ -299,7 +295,7 @@ def get_price_m_loc_area_cat() -> dict:
     collection_prices = mydb["_prices"] 
     collection_prices_nchg = mydb["_prices_no_change"] 
 
-    flats = collection_flats.find()
+    flats = collection_flats.find({"operation": "sale"})
         
     df_flats =  pd.DataFrame(list(flats))
 
@@ -417,7 +413,7 @@ if __name__ == "__main__":
     price_records_data = get_price_records_data(max_prices_flats)
     save_json(price_records_data, "most_price_changes")
 
-    latest_change_ids = get_flats_multiprice_latest(5)
+    latest_change_ids = get_flats_multiprice_latest(6)
     prices = get_price_records_data(latest_change_ids)
     save_json(prices, "latest_price_changes")
 

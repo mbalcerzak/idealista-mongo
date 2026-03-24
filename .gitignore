@@ -10,8 +10,12 @@ secrets.toml
 
 log_inside*
 log
+logs/
 
 *.parquet
 *.csv
 
 *.env
+
+notebooks/
+mlruns/

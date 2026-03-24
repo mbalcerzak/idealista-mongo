@@ -1,10 +1,12 @@
 import json
-import pymongo
-from db_mongo import get_db
 from bson.json_util import dumps
 import pandas as pd
+from PIL import Image
+from io import BytesIO
 from collections import defaultdict, Counter
 from datetime import datetime, timedelta
+
+from src.db_mongo import get_db
 
 
 def strip_dict(d:dict) -> dict:
@@ -48,7 +50,7 @@ def get_flats_multiprice_max(min_count=3) -> list:
     return max_pricesflats
 
 
-def get_flats_multiprice_latest(weeks_ago=2, min_changes=3) -> list:
+def get_flats_multiprice_latest(weeks_ago=2, min_changes=2) -> list:
     """
     Returns flats' IDs of flats with most recent price changes
     """
@@ -319,7 +321,17 @@ def get_flats_id(n:int=2) -> list:
 
     return [x["_id"] for x in name_cursor]
 
+
+def get_image_mongo(collection, image_id):
+    image_document = collection.find_one({"_id": image_id})
+    if image_document is None:
+        print(f"No image found with ID: {image_id}")
+        return      
     
+    image_data = image_document["image"]
+    image = Image.open(BytesIO(image_data))
+    return image    
+
 
 if __name__ == "__main__":
     # price_changes = get_flats_id()
